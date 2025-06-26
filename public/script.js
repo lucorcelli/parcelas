@@ -43,9 +43,6 @@ function mascararCpfFinal(cpf) {
   const numeros = cpf.replace(/\D/g, "").slice(-8);
   return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
 }
-function formatarCpf(cpf) {
-  return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
-}
 
 async function buscarParcelas(cpf) {
   if (!cpf) {
@@ -56,7 +53,7 @@ async function buscarParcelas(cpf) {
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
 
-  const url = `/api/parcelas?cpf=${formatarCpf(cpf)}`;
+  const url = `/api/parcelas?cpf=${cpf}`;
 
   try {
     const response = await fetch(url);
@@ -81,7 +78,7 @@ async function buscarParcelas(cpf) {
       });
     });
 
-    // ✅ Ordenar antes de montar a tabela
+    // Ordenar por data de vencimento
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
     todasParcelas.forEach(p => {
@@ -119,7 +116,7 @@ async function buscarParcelas(cpf) {
         margin-bottom: 20px;">
         <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
         <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} —
-        <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">${totalSelecionado}</span>
+        <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">${totalGeral.toFixed(2).replace(".", ",")}</span></div>
       </div>
     `;
 
@@ -154,8 +151,7 @@ document.getElementById("selecionarTodos").addEventListener("click", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-const params = new URLSearchParams(window.location.search);
-const cpf = params.get("token");
-if (cpf) buscarParcelas(cpf);
-  
+  const params = new URLSearchParams(window.location.search);
+  const cpf = params.get("token"); // agora lê de "?token="
+  if (cpf) buscarParcelas(cpf);
 });
