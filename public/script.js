@@ -39,15 +39,13 @@ function calcularValorCorrigidoSimples(valorOriginal, vencimentoStr) {
 }
 
 async function buscarParcelas() {
+  const nome = document.getElementById("nomeCliente").value.trim();
   const cpf = document.getElementById("cpfInput").value.trim();
   if (!cpf) return alert("Digite um CPF válido.");
 
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
-  const nome = document.getElementById("nomeCliente").value.trim();
-  document.getElementById("dadosCliente").innerHTML = nome && cpf
-  ? `Cliente: <strong>${nome}</strong> — CPF: <strong>${cpf}</strong>`
-  : "";
+
   const url = `/api/parcelas?cpf=${cpf}`;
 
   try {
@@ -66,6 +64,10 @@ async function buscarParcelas() {
     });
 
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
+
+    document.getElementById("dadosCliente").innerHTML = nome && cpf
+      ? `Cliente: <strong>${nome}</strong> — CPF: <strong>${cpf}</strong>`
+      : "";
 
     todasParcelas.forEach(p => {
       if (!p.datavencimento) return;
@@ -118,4 +120,17 @@ document.getElementById("selecionarTodos").addEventListener("click", () => {
   const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
   checkboxes.forEach(cb => cb.checked = !algumMarcado);
   atualizarSelecionado();
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const cpf = params.get("cpf");
+  const nome = params.get("nome");
+  if (cpf) {
+    document.getElementById("cpfInput").value = cpf;
+  }
+  if (nome) {
+    document.getElementById("nomeCliente").value = nome;
+  }
+  if (cpf) buscarParcelas();
 });
