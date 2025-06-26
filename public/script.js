@@ -1,4 +1,4 @@
-  const faixasJuros = [
+const faixasJuros = [
   { de: 1, ate: 59, taxa: 5.01 },
   { de: 60, ate: 365, taxa: 6 },
   { de: 366, ate: 730, taxa: 5 },
@@ -53,66 +53,66 @@ async function buscarParcelas() {
 
     const data = await response.json();
     let totalGeral = 0;
+    let todasParcelas = [];
 
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
-      const parcelasOrdenadas = [...(item.parcelas || [])].sort(...);
-      parcelasOrdenadas.forEach(p => {
+      (item.parcelas || []).forEach(p => {
+        todasParcelas.push({ contrato, ...p });
       });
-     });
+    });
 
-      parcelasOrdenadas.forEach(p => {
-        if (!p.datavencimento) return;
+    todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
-        const venc = p.datavencimento;
-        const valorOriginal = p.valorvencimento;
-        const { corrigido, atraso } = calcularValorCorrigidoSimples(valorOriginal, venc);
-        totalGeral += corrigido;
+    todasParcelas.forEach(p => {
+      if (!p.datavencimento) return;
 
-        const tr = document.createElement("tr");
-        if (atraso > 0) tr.classList.add("vencida");
+      const venc = p.datavencimento;
+      const valorOriginal = p.valorvencimento;
+      const { corrigido, atraso } = calcularValorCorrigidoSimples(valorOriginal, venc);
+      totalGeral += corrigido;
 
-        tr.innerHTML = `
+      const tr = document.createElement("tr");
+      if (atraso > 0) tr.classList.add("vencida");
+
+      tr.innerHTML = `
         <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
-        <td>${contrato}</td>
+        <td>${p.contrato}</td>
         <td>${p.parcela}</td>
         <td>${formatarData(venc)}</td>
         <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
         <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
-        <td>${atraso > 0 ? atraso + " dia(s)" : "-"}</td>
-        `;
+        <td>${atraso > 0 ? `${atraso} dia(s)` : "-"}</td>
+      `;
 
-        tbody.appendChild(tr);
-      });
+      tbody.appendChild(tr);
     });
 
     document.getElementById("totalGeral").textContent = totalGeral.toFixed(2).replace(".", ",");
+    atualizarSelecionado();
 
-    // Eventos dos checkboxes
     document.querySelectorAll(".selecionar-parcela").forEach(cb => {
       cb.addEventListener("change", atualizarSelecionado);
     });
 
   } catch (err) {
     console.error("Erro:", err);
-    alert("Erro ao consultar os dados.");
+    alert("Erro ao consultar os dados. Verifique o CPF ou a API.");
   }
 }
 
 function atualizarSelecionado() {
-  let totalSelecionado = 0;
+  let total = 0;
   document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
     const valor = parseFloat(cb.dataset.valor);
-    if (!isNaN(valor)) {
-      totalSelecionado += valor;
-    }
+    if (!isNaN(valor)) total += valor;
   });
-  document.getElementById("totalSelecionado").textContent = totalSelecionado.toFixed(2).replace(".", ",");
+  document.getElementById("totalSelecionado").textContent = total.toFixed(2).replace(".", ",");
 }
 
 document.getElementById("selecionarTodos").addEventListener("click", () => {
-  const todos = document.querySelectorAll(".selecionar-parcela");
-  const algumMarcado = Array.from(todos).some(cb => cb.checked);
-  todos.forEach(cb => cb.checked = !algumMarcado);
+  const checkboxes = document.querySelectorAll(".selecionar-parcela");
+  const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
+  checkboxes.forEach(cb => cb.checked = !algumMarcado);
   atualizarSelecionado();
 });
