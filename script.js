@@ -28,17 +28,27 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   const venc = new Date(vencimentoStr);
   const dias = Math.floor((hoje - venc) / (1000 * 60 * 60 * 24));
 
-  if (dias <= 0) return { corrigido: valorOriginal, atraso: 0 };
+  if (dias <= 5) return { corrigido: valorOriginal, atraso: dias };
 
-    const jurosDia = calcularJurosDiario(dias);
-    const comMulta = valorOriginal * 1.02;
-    const comJuros = comMulta * (1 + jurosDia * dias);
+  const jurosDia = calcularJurosDiario(dias);
+  const comMulta = valorOriginal * 1.02;
+  const comJuros = comMulta * (1 + jurosDia * dias);
 
-    return { corrigido: comJuros, atraso: dias };
- }
-  async function buscarParcelas(cpf) {
-    if (!cpf) {
-      alert("CPF não informado na URL.");
+  return { corrigido: comJuros, atraso: dias };
+}
+
+function abreviarNome(nome) {
+  return nome.split(" ").map(p => p[0] + ".").join(" ");
+}
+
+function mascararCpfFinal(cpf) {
+  const numeros = cpf.replace(/\D/g, "").slice(-8);
+  return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
+}
+
+async function buscarParcelas(cpf) {
+  if (!cpf) {
+    alert("CPF não informado na URL.");
     return;
   }
 
@@ -49,22 +59,27 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
 
   try {
     const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Erro da API: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Erro da API: ${response.status}`);
 
     const data = await response.json();
+    const nomeCompleto = data.itens?.[0]?.cliente?.identificacao?.nome || "";
+    const nomeAbreviado = abreviarNome(nomeCompleto);
+    const cpfParcial = mascararCpfFinal(cpf);
+
+    let totalGeral = 0;
+    const todasParcelas = [];
 
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
 
       (item.parcelas || []).forEach(p => {
-        if (!p.datavencimento) return;
+        const emAberto = p.capitalaberto > 0 || (p.totalpago || 0) < p.valorvencimento;
+        if (!p.datavencimento || !emAberto) return;
 
         const venc = p.datavencimento;
         const valorOriginal = p.valorvencimento;
         const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, venc);
+        totalGeral += corrigido;
 
         const tr = document.createElement("tr");
         if (atraso > 0) tr.classList.add("vencida");
@@ -82,8 +97,30 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
       });
     });
 
+    document.getElementById("dadosCliente").innerHTML = `
+      <div style="
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 12px 16px;
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #333;
+        margin-bottom: 20px;">
+        <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
+        <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")}</div>
+      </div>
+    `;
+
   } catch (err) {
     console.error("Erro:", err);
     alert("Ocorreu um erro ao consultar a API.");
   }
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const cpf = params.get("cpf");
+  if (cpf) buscarParcelas(cpf);
+});
