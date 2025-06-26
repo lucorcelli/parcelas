@@ -26,3 +26,17 @@ th, td {
 thead {
   background-color: #eee;
 }
+tr.vencida {
+  background-color: #ffe5e5;
+  color: #b10000;
+  font-weight: bold;
+}
+
+td.valorCorrigido {
+  background-color: #f7f7f7;
+}
+
+td.diasAtraso {
+  font-size: 0.9em;
+  color: #555;
+}
