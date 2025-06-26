@@ -56,9 +56,10 @@ async function buscarParcelas() {
 
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
-      const parcelasOrdenadas = [...(item.parcelas || [])].sort((a, b) => {
-        return new Date(a.datavencimento) - new Date(b.datavencimento);
+      const parcelasOrdenadas = [...(item.parcelas || [])].sort(...);
+      parcelasOrdenadas.forEach(p => {
       });
+     });
 
       parcelasOrdenadas.forEach(p => {
         if (!p.datavencimento) return;
