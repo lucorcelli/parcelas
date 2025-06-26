@@ -60,19 +60,23 @@ async function buscarParcelas() {
 
     (item.parcelas || []).forEach(p => {
       if (p.datavencimento) {
-        const vencimento = p.datavencimento;
-        const valorOriginal = p.valorvencimento;
-        const valorCorrigido = calcularValorCorrigido(valorOriginal, vencimento);
+      const diasAtraso = Math.floor((new Date() - new Date(vencimento)) / (1000 * 60 * 60 * 24));
+      const atrasada = diasAtraso > 0;
+      const valorCorrigido = calcularValorCorrigido(valorOriginal, vencimento);
 
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${contrato}</td>
-          <td>${p.parcela}</td>
-          <td>${formatarData(vencimento)}</td>
-          <td>R$ ${valorOriginal.toFixed(2).replace('.', ',')}</td>
-          <td>R$ ${valorCorrigido.toFixed(2).replace('.', ',')}</td>
-        `;
-        tbody.appendChild(row);
+      const row = document.createElement("tr");
+      if (atrasada) row.classList.add("vencida");
+
+      row.innerHTML = `
+      <td>${contrato}</td>
+      <td>${p.parcela}</td>
+      <td>${formatarData(vencimento)}</td>
+      <td>R$ ${valorOriginal.toFixed(2).replace('.', ',')}</td>
+      <td class="valorCorrigido">R$ ${valorCorrigido.toFixed(2).replace('.', ',')}</td>
+      <td class="diasAtraso">${atrasada ? diasAtraso + ' dia(s)' : '-'}</td>
+`;
+tbody.appendChild(row);
+
       }
     });
   });
