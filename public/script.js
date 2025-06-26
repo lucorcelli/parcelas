@@ -23,19 +23,20 @@ function formatarData(dataStr) {
   return data.toLocaleDateString("pt-BR");
 }
 
-function calcularValorCorrigido(valorOriginal, vencimentoStr) {
+function calcularValorCorrigidoSimples(valorOriginal, vencimentoStr) {
   const hoje = new Date();
   const venc = new Date(vencimentoStr);
   const dias = Math.floor((hoje - venc) / (1000 * 60 * 60 * 24));
 
   if (dias <= 0) return { corrigido: valorOriginal, atraso: 0 };
 
-    const jurosDia = calcularJurosDiario(dias);
-    const comMulta = valorOriginal * 1.02;
-    const comJuros = comMulta * (1 + jurosDia * dias);
+  const jurosDia = calcularJurosDiario(dias);
+  const multa = valorOriginal * 0.02;
+  const juros = valorOriginal * jurosDia * dias;
+  const total = valorOriginal + multa + juros;
 
-    return { corrigido: comJuros, atraso: dias };
- }
+  return { corrigido: total, atraso: dias };
+}
 
 async function buscarParcelas() {
   const cpf = document.getElementById("cpfInput").value.trim();
@@ -48,22 +49,22 @@ async function buscarParcelas() {
 
   try {
     const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Erro da API: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Erro da API: ${response.status}`);
 
     const data = await response.json();
 
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
+      const parcelasOrdenadas = [...(item.parcelas || [])].sort((a, b) => {
+        return new Date(a.datavencimento) - new Date(b.datavencimento);
+      });
 
-      (item.parcelas || []).forEach(p => {
+      parcelasOrdenadas.forEach(p => {
         if (!p.datavencimento) return;
 
         const venc = p.datavencimento;
         const valorOriginal = p.valorvencimento;
-        const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, venc);
+        const { corrigido, atraso } = calcularValorCorrigidoSimples(valorOriginal, venc);
 
         const tr = document.createElement("tr");
         if (atraso > 0) tr.classList.add("vencida");
@@ -83,6 +84,6 @@ async function buscarParcelas() {
 
   } catch (err) {
     console.error("Erro:", err);
-    alert("Ocorreu um erro ao consultar a API.");
+    alert("Erro ao consultar os dados. Verifique se o CPF e o token estão corretos.");
   }
 }
