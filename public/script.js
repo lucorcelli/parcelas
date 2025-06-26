@@ -23,6 +23,16 @@ function formatarData(dataStr) {
   return data.toLocaleDateString("pt-BR");
 }
 
+function abreviarNome(nomeCompleto) {
+  const partes = nomeCompleto.trim().split(" ");
+  return partes.map(p => p[0] + ".").join(" ");
+}
+
+function mascararCpfFinal(cpf) {
+  const partes = cpf.replace(/\D/g, "").slice(-8);
+  return partes.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
+}
+
 function calcularValorCorrigidoSimples(valorOriginal, vencimentoStr) {
   const hoje = new Date();
   const venc = new Date(vencimentoStr);
@@ -38,10 +48,7 @@ function calcularValorCorrigidoSimples(valorOriginal, vencimentoStr) {
   return { corrigido: total, atraso: dias };
 }
 
-async function buscarParcelas() {
-  const cpf = document.getElementById("cpfInput").value.trim();
-  if (!cpf) return alert("Digite um CPF válido.");
-
+async function buscarParcelas(cpf) {
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
 
@@ -51,14 +58,17 @@ async function buscarParcelas() {
 
     const data = await response.json();
 
-    // Pega o nome real do cliente
-    const nome = data.itens?.[0]?.cliente?.identificacao?.nome || "";
-    document.getElementById("nomeCliente").value = nome;
+    // Pega o nome real da API
+    const nomeCompleto = data.itens?.[0]?.cliente?.identificacao?.nome || "";
+    const nomeAbreviado = abreviarNome(nomeCompleto);
+    const cpfParcial = mascararCpfFinal(cpf);
 
     document.getElementById("dadosCliente").innerHTML =
-    nome && cpf ? `Cliente: <strong>${nome}</strong> — CPF: <strong>${cpf}</strong>` : "";
+      nomeCompleto && cpf
+        ? `Cliente: <strong>${nomeAbreviado}</strong> — CPF final <strong>${cpfParcial}</strong>`
+        : "";
 
-    // Junta todas as parcelas de todos os contratos
+    // Junta todas as parcelas
     const todasParcelas = [];
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
@@ -67,7 +77,7 @@ async function buscarParcelas() {
       });
     });
 
-    // Ordena por data de vencimento
+    // Ordena por vencimento
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
     let totalGeral = 0;
@@ -125,11 +135,9 @@ document.getElementById("selecionarTodos").addEventListener("click", () => {
   atualizarSelecionado();
 });
 
+// Ao carregar a página, verifica se o CPF veio via URL
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const cpf = params.get("cpf");
-  if (cpf) {
-    document.getElementById("cpfInput").value = cpf;
-    buscarParcelas();
-  }
+  if (cpf) buscarParcelas(cpf);
 });
