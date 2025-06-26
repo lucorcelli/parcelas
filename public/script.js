@@ -52,11 +52,11 @@ async function buscarParcelas() {
     const data = await response.json();
 
     // Pega o nome real do cliente
-    const nome = data.nome || data.itens?.[0]?.nome || "";
+    const nome = data.itens?.[0]?.cliente?.identificacao?.nome || "";
     document.getElementById("nomeCliente").value = nome;
 
     document.getElementById("dadosCliente").innerHTML =
-      nome && cpf ? `Cliente: <strong>${nome}</strong> — CPF: <strong>${cpf}</strong>` : "";
+    nome && cpf ? `Cliente: <strong>${nome}</strong> — CPF: <strong>${cpf}</strong>` : "";
 
     // Junta todas as parcelas de todos os contratos
     const todasParcelas = [];
