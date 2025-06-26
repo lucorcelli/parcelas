@@ -52,14 +52,12 @@ async function buscarParcelas() {
     if (!response.ok) throw new Error(`Erro da API: ${response.status}`);
 
     const data = await response.json();
+    let totalGeral = 0;
 
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
       const parcelasOrdenadas = [...(item.parcelas || [])].sort((a, b) => {
         return new Date(a.datavencimento) - new Date(b.datavencimento);
-        document.querySelectorAll(".selecionar-parcela").forEach(cb => {
-        cb.addEventListener("change", atualizarSelecionado);
-        });    
       });
 
       parcelasOrdenadas.forEach(p => {
@@ -68,33 +66,52 @@ async function buscarParcelas() {
         const venc = p.datavencimento;
         const valorOriginal = p.valorvencimento;
         const { corrigido, atraso } = calcularValorCorrigidoSimples(valorOriginal, venc);
+        totalGeral += corrigido;
 
         const tr = document.createElement("tr");
         if (atraso > 0) tr.classList.add("vencida");
 
         tr.innerHTML = `
-          <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" /></td>
           <td>${contrato}</td>
           <td>${p.parcela}</td>
           <td>${formatarData(venc)}</td>
           <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
-          <td class="valorCorrigido">R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
-          <td class="diasAtraso">${atraso > 0 ? atraso + " dia(s)" : "-"}</td>
+          <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
+          <td>${atraso > 0 ? atraso + " dia(s)" : "-"}</td>
+          <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" /></td>
         `;
 
         tbody.appendChild(tr);
       });
     });
 
+    document.getElementById("totalGeral").textContent = totalGeral.toFixed(2).replace(".", ",");
+
+    // Eventos dos checkboxes
+    document.querySelectorAll(".selecionar-parcela").forEach(cb => {
+      cb.addEventListener("change", atualizarSelecionado);
+    });
+
   } catch (err) {
     console.error("Erro:", err);
-    alert("Erro ao consultar os dados. Verifique se o CPF e o token estão corretos.");
+    alert("Erro ao consultar os dados.");
   }
 }
-document.getElementById("selecionarTodos").addEventListener("click", () => {
-  const todosCheckboxes = document.querySelectorAll(".selecionar-parcela");
-  const algumSelecionado = Array.from(todosCheckboxes).some(cb => cb.checked);
 
-  todosCheckboxes.forEach(cb => cb.checked = !algumSelecionado);
+function atualizarSelecionado() {
+  let totalSelecionado = 0;
+  document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
+    const valor = parseFloat(cb.dataset.valor);
+    if (!isNaN(valor)) {
+      totalSelecionado += valor;
+    }
+  });
+  document.getElementById("totalSelecionado").textContent = totalSelecionado.toFixed(2).replace(".", ",");
+}
+
+document.getElementById("selecionarTodos").addEventListener("click", () => {
+  const todos = document.querySelectorAll(".selecionar-parcela");
+  const algumMarcado = Array.from(todos).some(cb => cb.checked);
+  todos.forEach(cb => cb.checked = !algumMarcado);
   atualizarSelecionado();
 });
