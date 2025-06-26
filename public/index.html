@@ -12,14 +12,6 @@
       margin: 0 auto;
       padding: 20px;
     }
-    <div style="margin-bottom: 15px;">
-    <label>Nome do Cliente:</label><br />
-    <input type="text" id="nomeCliente" placeholder="Digite o nome..." style="width: 300px;" /><br /><br />
-
-    <label>CPF do Cliente:</label><br />
-    <input type="text" id="cpfInput" placeholder="Digite o CPF..." style="width: 200px;" />
-    <button onclick="buscarParcelas()">Consultar</button>
-    </div>
 
     table {
       width: 100%;
@@ -31,20 +23,31 @@
       padding: 8px;
       border: 1px solid #ccc;
       text-align: center;
+      font-size: 14px;
     }
+
+    th:nth-child(1), td:nth-child(1) { width: 50px; }    /* Checkbox */
+    th:nth-child(2), td:nth-child(2) { width: 110px; }   /* Contrato */
+    th:nth-child(3), td:nth-child(3) { width: 70px; }    /* Parcela Nº */
+    th:nth-child(4), td:nth-child(4) { width: 100px; }   /* Vencimento */
+    th:nth-child(5), td:nth-child(5) { width: 110px; }   /* Valor Original */
+    th:nth-child(6), td:nth-child(6) { width: 115px; }   /* Valor Corrigido */
+    th:nth-child(7), td:nth-child(7) { width: 100px; }   /* Dias Atraso */
 
     .vencida {
       background-color: #ffe5e5;
     }
 
     input[type="text"] {
-      width: 150px;
       padding: 8px;
-      margin-right: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
     }
 
     button {
       padding: 8px 12px;
+      margin-top: 5px;
+      cursor: pointer;
     }
 
     @media (max-width: 768px) {
@@ -67,28 +70,34 @@
 </head>
 <body>
   <h1>Parcelas do Cliente</h1>
+
+  <div style="margin-bottom: 20px;">
+    <label>Nome do Cliente:</label><br />
+    <input type="text" id="nomeCliente" placeholder="Digite o nome..." style="width: 100%; max-width: 300px;" /><br /><br />
+
+    <label>CPF do Cliente:</label><br />
+    <input type="text" id="cpfInput" placeholder="Digite o CPF..." style="width: 100%; max-width: 200px;" />
+    <button onclick="buscarParcelas()">Consultar</button>
+  </div>
+
   <h3 id="dadosCliente" style="margin-top: 20px;"></h3>
 
-  <input type="text" id="cpfInput" placeholder="Digite o CPF..." />
-  <button onclick="buscarParcelas()">Consultar</button>
-
-  <div style="margin-top: 20px;">
+  <div>
     <button id="selecionarTodos">Selecionar Tudo</button>
   </div>
 
   <table id="tabelaParcelas">
- <thead>
-  <tr>
-    <th>Selecionar</th>
-    <th>Contrato</th>
-    <th>Parcela Nº</th>
-    <th>Vencimento</th>
-    <th>Valor Original</th>
-    <th>Valor Corrigido</th>
-    <th>Dias em Atraso</th>
-  </tr>
-</thead>
-
+    <thead>
+      <tr>
+        <th>Selecionar</th>
+        <th>Contrato</th>
+        <th>Parcela Nº</th>
+        <th>Vencimento</th>
+        <th>Valor Original</th>
+        <th>Valor Corrigido</th>
+        <th>Dias em Atraso</th>
+      </tr>
+    </thead>
     <tbody>
       <!-- Parcelas aparecerão aqui -->
     </tbody>
