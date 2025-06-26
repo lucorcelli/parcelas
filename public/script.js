@@ -44,7 +44,10 @@ async function buscarParcelas() {
 
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
-
+  const nome = document.getElementById("nomeCliente").value.trim();
+  document.getElementById("dadosCliente").innerHTML = nome && cpf
+  ? `Cliente: <strong>${nome}</strong> — CPF: <strong>${cpf}</strong>`
+  : "";
   const url = `/api/parcelas?cpf=${cpf}`;
 
   try {
