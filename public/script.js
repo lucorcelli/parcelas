@@ -151,7 +151,8 @@ document.getElementById("selecionarTodos").addEventListener("click", () => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const cpf = params.get("cpf");
-  if (cpf) buscarParcelas(cpf);
+const params = new URLSearchParams(window.location.search);
+const cpf = params.get("token");
+if (cpf) buscarParcelas(cpf);
+  
 });
