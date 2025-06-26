@@ -1,4 +1,4 @@
-const faixasJuros = [
+  const faixasJuros = [
   { de: 1, ate: 59, taxa: 5.01 },
   { de: 60, ate: 365, taxa: 6 },
   { de: 366, ate: 730, taxa: 5 },
@@ -72,13 +72,13 @@ async function buscarParcelas() {
         if (atraso > 0) tr.classList.add("vencida");
 
         tr.innerHTML = `
-          <td>${contrato}</td>
-          <td>${p.parcela}</td>
-          <td>${formatarData(venc)}</td>
-          <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
-          <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
-          <td>${atraso > 0 ? atraso + " dia(s)" : "-"}</td>
-          <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" /></td>
+        <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
+        <td>${contrato}</td>
+        <td>${p.parcela}</td>
+        <td>${formatarData(venc)}</td>
+        <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
+        <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
+        <td>${atraso > 0 ? atraso + " dia(s)" : "-"}</td>
         `;
 
         tbody.appendChild(tr);
