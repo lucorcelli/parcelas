@@ -56,6 +56,9 @@ async function buscarParcelas() {
         Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJkYzA0MjFkOTc1YWJiNDliNGY3MTIxNzc2ZTc2MmY3ZDVkZmY5MTRlIl0sImp0aSI6ImI0MzNkMWQxY2Y1NTQxZGJiNzdiOWU3NGMxNTRhNjlmIiwibmFtZWlkIjoiZGMwNDIxZDk3NWFiYjQ5YjRmNzEyMTc3NmU3NjJmN2Q1ZGZmOTE0ZSIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUwOTE4ODk3LCJleHAiOjE3NTEwMDUyOTcsImlhdCI6MTc1MDkxODg5N30.ThjqPjF4Z50l8a4kEpYlHA_Ko12GyY-vCBKdjKZiH5M"
       }
     });
+    if (!response.ok) {
+       throw new Error(`Erro da API: ${response.status} ${response.statusText}`);
+    }
 
     const data = await response.json();
 
