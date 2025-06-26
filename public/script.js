@@ -73,7 +73,9 @@ async function buscarParcelas(cpf) {
 
       const abertas = (item.parcelas || []).filter(p => {
         if (!p.datavencimento) return false;
-        const emAberto = p.capitalaberto > 0 || (p.totalpago || 0) < p.valorvencimento;
+       // const emAberto = p.capitalaberto > 0 || (p.totalpago || 0) < p.valorvencimento;
+        const emAberto = p.capitalaberto > 0 && p.valorvencimento > 0;
+
         return emAberto;
       });
 
