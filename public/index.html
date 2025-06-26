@@ -12,6 +12,14 @@
       margin: 0 auto;
       padding: 20px;
     }
+    <div style="margin-bottom: 15px;">
+    <label>Nome do Cliente:</label><br />
+    <input type="text" id="nomeCliente" placeholder="Digite o nome..." style="width: 300px;" /><br /><br />
+
+    <label>CPF do Cliente:</label><br />
+    <input type="text" id="cpfInput" placeholder="Digite o CPF..." style="width: 200px;" />
+    <button onclick="buscarParcelas()">Consultar</button>
+    </div>
 
     table {
       width: 100%;
@@ -59,6 +67,7 @@
 </head>
 <body>
   <h1>Parcelas do Cliente</h1>
+  <h3 id="dadosCliente" style="margin-top: 20px;"></h3>
 
   <input type="text" id="cpfInput" placeholder="Digite o CPF..." />
   <button onclick="buscarParcelas()">Consultar</button>
