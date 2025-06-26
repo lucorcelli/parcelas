@@ -36,10 +36,11 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
 
     return { corrigido: comJuros, atraso: dias };
  }
-
-async function buscarParcelas() {
-  const cpf = document.getElementById("cpfInput").value.trim();
-  if (!cpf) return alert("Digite um CPF válido.");
+  async function buscarParcelas(cpf) {
+    if (!cpf) {
+      alert("CPF não informado na URL.");
+    return;
+  }
 
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
