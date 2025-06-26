@@ -152,6 +152,18 @@ document.getElementById("selecionarTodos").addEventListener("click", () => {
   atualizarSelecionado();
 });
 
+document.getElementById("voltarWhatsapp").addEventListener("click", () => {
+  let total = 0;
+  document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
+    const valor = parseFloat(cb.dataset.valor);
+    if (!isNaN(valor)) total += valor;
+  });
+
+  const mensagem = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}`;
+  const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
+
+  window.open(link, "_blank");
+});
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const cpf = params.get("token"); // pegando CPF pelo novo parâmetro "token"
