@@ -65,20 +65,23 @@ async function buscarParcelas(cpf) {
     const cpfParcial = mascararCpfFinal(cpf);
 
     let totalGeral = 0;
+    let htmlString = "";
     const todasParcelas = [];
 
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
 
-      (item.parcelas || []).forEach(p => {
+      const abertas = (item.parcelas || []).filter(p => {
+        if (!p.datavencimento) return false;
         const emAberto = p.capitalaberto > 0 || (p.totalpago || 0) < p.valorvencimento;
-        if (!p.datavencimento || !emAberto) return;
+        return emAberto;
+      });
 
+      abertas.forEach(p => {
         todasParcelas.push({ contrato, ...p });
       });
     });
 
-    // Ordenar por data de vencimento
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
     todasParcelas.forEach(p => {
@@ -87,21 +90,20 @@ async function buscarParcelas(cpf) {
       const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, venc);
       totalGeral += corrigido;
 
-      const tr = document.createElement("tr");
-      if (atraso > 0) tr.classList.add("vencida");
-
-      tr.innerHTML = `
-        <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
-        <td>${p.contrato}</td>
-        <td>${p.parcela}</td>
-        <td>${formatarData(venc)}</td>
-        <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
-        <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
-        <td>${atraso > 0 ? `${atraso} dia(s)` : "-"}</td>
+      htmlString += `
+        <tr class="${atraso > 0 ? "vencida" : ""}">
+          <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
+          <td>${p.contrato}</td>
+          <td>${p.parcela}</td>
+          <td>${formatarData(venc)}</td>
+          <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
+          <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
+          <td>${atraso > 0 ? `${atraso} dia(s)` : "-"}</td>
+        </tr>
       `;
-
-      tbody.appendChild(tr);
     });
+
+    tbody.innerHTML = htmlString;
 
     document.getElementById("dadosCliente").innerHTML = `
       <div style="
@@ -152,6 +154,6 @@ document.getElementById("selecionarTodos").addEventListener("click", () => {
 
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
-  const cpf = params.get("token"); // agora lê de "?token="
+  const cpf = params.get("token"); // pegando CPF pelo novo parâmetro "token"
   if (cpf) buscarParcelas(cpf);
 });
