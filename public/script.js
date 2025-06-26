@@ -43,6 +43,9 @@ function mascararCpfFinal(cpf) {
   const numeros = cpf.replace(/\D/g, "").slice(-8);
   return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
 }
+function formatarCpf(cpf) {
+  return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+}
 
 async function buscarParcelas(cpf) {
   if (!cpf) {
@@ -53,7 +56,7 @@ async function buscarParcelas(cpf) {
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
 
-  const url = `/api/parcelas?cpf=${cpf}`;
+  const url = `/api/parcelas?cpf=${formatarCpf(cpf)}`;
 
   try {
     const response = await fetch(url);
