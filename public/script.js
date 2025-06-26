@@ -38,7 +38,7 @@ function calcularValorCorrigidoSimples(valorOriginal, vencimentoStr) {
   const venc = new Date(vencimentoStr);
   const dias = Math.floor((hoje - venc) / (1000 * 60 * 60 * 24));
 
-  if (dias <= 0) return { corrigido: valorOriginal, atraso: 0 };
+  if (dias <= 5) return { corrigido: valorOriginal, atraso: dias };
 
   const jurosDia = calcularJurosDiario(dias);
   const multa = valorOriginal * 0.02;
