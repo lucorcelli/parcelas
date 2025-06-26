@@ -12,7 +12,7 @@ const faixasJuros = [
 function calcularJurosDiario(dias) {
   for (const faixa of faixasJuros) {
     if (dias >= faixa.de && dias <= faixa.ate) {
-      return faixa.taxa / 30 / 100;
+      return faixa.taxa / 30 / 100; // mensal → diário
     }
   }
   return 0;
@@ -65,8 +65,8 @@ async function buscarParcelas() {
       (item.parcelas || []).forEach(p => {
         if (!p.datavencimento) return;
 
-        const valorOriginal = p.valorvencimento;
         const venc = p.datavencimento;
+        const valorOriginal = p.valorvencimento;
         const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, venc);
 
         const tr = document.createElement("tr");
@@ -80,12 +80,13 @@ async function buscarParcelas() {
           <td class="valorCorrigido">R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
           <td class="diasAtraso">${atraso > 0 ? atraso + " dia(s)" : "-"}</td>
         `;
+
         tbody.appendChild(tr);
       });
     });
 
   } catch (err) {
     console.error("Erro:", err);
-    alert("Algo deu errado ao consultar a API.");
+    alert("Erro ao consultar a API. Verifique o token ou o CPF digitado.");
   }
 }
