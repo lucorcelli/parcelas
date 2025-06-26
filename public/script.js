@@ -23,9 +23,21 @@ function formatarData(dataStr) {
   return data.toLocaleDateString("pt-BR");
 }
 
-function abreviarNome(nomeCompleto) {
-  const partes = nomeCompleto.trim().split(" ");
-  return partes.map(p => p[0] + ".").join(" ");
+function calcularValorCorrigido(valorOriginal, vencimentoStr) {
+  const hoje = new Date();
+  const venc = new Date(vencimentoStr);
+  const dias = Math.floor((hoje - venc) / (1000 * 60 * 60 * 24));
+  if (dias <= 5) return { corrigido: valorOriginal, atraso: dias };
+
+  const jurosDia = calcularJurosDiario(dias);
+  const comMulta = valorOriginal * 1.02;
+  const comJuros = comMulta * (1 + jurosDia * dias);
+
+  return { corrigido: comJuros, atraso: dias };
+}
+
+function abreviarNome(nome) {
+  return nome.split(" ").map(p => p[0] + ".").join(" ");
 }
 
 function mascararCpfFinal(cpf) {
@@ -33,80 +45,59 @@ function mascararCpfFinal(cpf) {
   return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
 }
 
-function calcularValorCorrigidoSimples(valorOriginal, vencimentoStr) {
-  const hoje = new Date();
-  const venc = new Date(vencimentoStr);
-  const dias = Math.floor((hoje - venc) / (1000 * 60 * 60 * 24));
-
-  if (dias <= 5) return { corrigido: valorOriginal, atraso: dias };
-
-  const jurosDia = calcularJurosDiario(dias);
-  const multa = valorOriginal * 0.02;
-  const juros = valorOriginal * jurosDia * dias;
-  const total = valorOriginal + multa + juros;
-
-  return { corrigido: total, atraso: dias };
-}
-
 async function buscarParcelas(cpf) {
+  if (!cpf) {
+    alert("CPF não informado na URL.");
+    return;
+  }
+
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
 
+  const url = `/api/parcelas?cpf=${cpf}`;
+
   try {
-    const response = await fetch(`/api/parcelas?cpf=${cpf}`);
+    const response = await fetch(url);
     if (!response.ok) throw new Error(`Erro da API: ${response.status}`);
 
     const data = await response.json();
-
     const nomeCompleto = data.itens?.[0]?.cliente?.identificacao?.nome || "";
     const nomeAbreviado = abreviarNome(nomeCompleto);
     const cpfParcial = mascararCpfFinal(cpf);
 
+    let totalGeral = 0;
     const todasParcelas = [];
 
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
+
       (item.parcelas || []).forEach(p => {
         const emAberto = p.capitalaberto > 0 || (p.totalpago || 0) < p.valorvencimento;
-        if (emAberto) {
-          todasParcelas.push({ contrato, ...p });
-        }
+        if (!p.datavencimento || !emAberto) return;
+
+        const venc = p.datavencimento;
+        const valorOriginal = p.valorvencimento;
+        const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, venc);
+        totalGeral += corrigido;
+
+        const tr = document.createElement("tr");
+        if (atraso > 0) tr.classList.add("vencida");
+
+        tr.innerHTML = `
+          <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
+          <td>${contrato}</td>
+          <td>${p.parcela}</td>
+          <td>${formatarData(venc)}</td>
+          <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
+          <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
+          <td>${atraso > 0 ? `${atraso} dia(s)` : "-"}</td>
+        `;
+
+        tbody.appendChild(tr);
       });
     });
 
-    todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
-
-    let totalGeral = 0;
-
-    todasParcelas.forEach(p => {
-      if (!p.datavencimento) return;
-
-      const venc = p.datavencimento;
-      const valorOriginal = p.valorvencimento;
-      const { corrigido, atraso } = calcularValorCorrigidoSimples(valorOriginal, venc);
-      totalGeral += corrigido;
-
-      const tr = document.createElement("tr");
-      if (atraso > 0) tr.classList.add("vencida");
-
-      tr.innerHTML = `
-        <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
-        <td>${p.contrato}</td>
-        <td>${p.parcela}</td>
-        <td>${formatarData(venc)}</td>
-        <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
-        <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
-        <td>${atraso > 0 ? `${atraso} dia(s)` : "-"}</td>
-      `;
-
-      tbody.appendChild(tr);
-    });
-
-    document.getElementById("totalGeral").textContent = totalGeral.toFixed(2).replace(".", ",");
-    atualizarSelecionado();
-
-    const totalSelecionado = document.getElementById("totalSelecionado").textContent;
-
+    // Exibir identificação do cliente e totais no topo
     document.getElementById("dadosCliente").innerHTML = `
       <div style="
         background-color: #f5f5f5;
@@ -117,11 +108,14 @@ async function buscarParcelas(cpf) {
         font-size: 15px;
         line-height: 1.6;
         color: #333;
-        margin-top: 20px;">
+        margin-bottom: 20px;">
         <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
-        <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} — <strong>Selecionado:</strong> R$ <span id="resumoSelecionado">${totalSelecionado}</span></div>
+        <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} — 
+             <strong>Selecionado:</strong> R$ <span id="resumoSelecionado">${totalGeral.toFixed(2).replace(".", ",")}</span></div>
       </div>
     `;
+
+    atualizarSelecionado();
 
     document.querySelectorAll(".selecionar-parcela").forEach(cb => {
       cb.addEventListener("change", atualizarSelecionado);
@@ -139,12 +133,12 @@ function atualizarSelecionado() {
     const valor = parseFloat(cb.dataset.valor);
     if (!isNaN(valor)) total += valor;
   });
-  document.getElementById("totalSelecionado").textContent = total.toFixed(2).replace(".", ",");
 
-  const resumoSpan = document.getElementById("resumoSelecionado");
-  if (resumoSpan) {
-    resumoSpan.textContent = total.toFixed(2).replace(".", ",");
-  }
+  const span = document.getElementById("totalSelecionado");
+  if (span) span.textContent = total.toFixed(2).replace(".", ",");
+
+  const resumo = document.getElementById("resumoSelecionado");
+  if (resumo) resumo.textContent = total.toFixed(2).replace(".", ",");
 }
 
 document.getElementById("selecionarTodos").addEventListener("click", () => {
