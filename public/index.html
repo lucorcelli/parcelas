@@ -5,6 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Consulta de Parcelas</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .vencida {
+      background-color: #ffe5e5;
+    }
+
+    input[type="text"] {
+      width: 250px;
+      padding: 8px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 8px 12px;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      input[type="text"], button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      #selecionarTodos {
+        margin-bottom: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
   <h1>Parcelas do Cliente</h1>
@@ -12,8 +63,10 @@
   <input type="text" id="cpfInput" placeholder="Digite o CPF..." />
   <button onclick="buscarParcelas()">Consultar</button>
 
-   <button id="selecionarTodos">Selecionar Tudo</button>
-  
+  <div style="margin-top: 20px;">
+    <button id="selecionarTodos">Selecionar Tudo</button>
+  </div>
+
   <table id="tabelaParcelas">
     <thead>
       <tr>
@@ -23,12 +76,18 @@
         <th>Valor Original</th>
         <th>Valor Corrigido</th>
         <th>Dias em Atraso</th>
+        <th>Selecionar</th>
       </tr>
     </thead>
     <tbody>
-      <!-- Os dados vão aparecer aqui -->
+      <!-- Parcelas aparecerão aqui -->
     </tbody>
   </table>
+
+  <div style="margin-top: 20px;">
+    <p><strong>Total de Todas as Parcelas:</strong> R$ <span id="totalGeral">0,00</span></p>
+    <p><strong>Total Selecionado:</strong> R$ <span id="totalSelecionado">0,00</span></p>
+  </div>
 
   <script src="script.js"></script>
 </body>
