@@ -30,12 +30,12 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
 
   if (dias <= 0) return { corrigido: valorOriginal, atraso: 0 };
 
-  const jurosDia = calcularJurosDiario(dias);
-  const comMulta = valorOriginal * 1.02;
-  const comJuros = comMulta * (1 + jurosDia * dias);
+    const jurosDia = calcularJurosDiario(dias);
+    const comMulta = valorOriginal * 1.02;
+    const comJuros = comMulta * (1 + jurosDia * dias);
 
-  return { corrigido: comJuros, atraso: dias };
-}
+    return { corrigido: comJuros, atraso: dias };
+ }
 
 async function buscarParcelas() {
   const cpf = document.getElementById("cpfInput").value.trim();
