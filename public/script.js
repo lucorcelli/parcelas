@@ -29,8 +29,8 @@ function abreviarNome(nomeCompleto) {
 }
 
 function mascararCpfFinal(cpf) {
-  const partes = cpf.replace(/\D/g, "").slice(-8);
-  return partes.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
+  const numeros = cpf.replace(/\D/g, "").slice(-8);
+  return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
 }
 
 function calcularValorCorrigidoSimples(valorOriginal, vencimentoStr) {
@@ -61,11 +61,6 @@ async function buscarParcelas(cpf) {
     const nomeCompleto = data.itens?.[0]?.cliente?.identificacao?.nome || "";
     const nomeAbreviado = abreviarNome(nomeCompleto);
     const cpfParcial = mascararCpfFinal(cpf);
-
-    document.getElementById("dadosCliente").innerHTML =
-      nomeCompleto && cpf
-        ? `Cliente: <strong>${nomeAbreviado}</strong> — CPF final <strong>${cpfParcial}</strong>`
-        : "";
 
     const todasParcelas = [];
 
@@ -110,6 +105,24 @@ async function buscarParcelas(cpf) {
     document.getElementById("totalGeral").textContent = totalGeral.toFixed(2).replace(".", ",");
     atualizarSelecionado();
 
+    const totalSelecionado = document.getElementById("totalSelecionado").textContent;
+
+    document.getElementById("dadosCliente").innerHTML = `
+      <div style="
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 12px 16px;
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #333;
+        margin-top: 20px;">
+        <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
+        <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} — <strong>Selecionado:</strong> R$ <span id="resumoSelecionado">${totalSelecionado}</span></div>
+      </div>
+    `;
+
     document.querySelectorAll(".selecionar-parcela").forEach(cb => {
       cb.addEventListener("change", atualizarSelecionado);
     });
@@ -127,6 +140,11 @@ function atualizarSelecionado() {
     if (!isNaN(valor)) total += valor;
   });
   document.getElementById("totalSelecionado").textContent = total.toFixed(2).replace(".", ",");
+
+  const resumoSpan = document.getElementById("resumoSelecionado");
+  if (resumoSpan) {
+    resumoSpan.textContent = total.toFixed(2).replace(".", ",");
+  }
 }
 
 document.getElementById("selecionarTodos").addEventListener("click", () => {
