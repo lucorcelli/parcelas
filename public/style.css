@@ -40,3 +40,19 @@ td.diasAtraso {
   font-size: 0.9em;
   color: #555;
 }
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  input[type="text"], button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  #selecionarTodos {
+    margin-bottom: 15px;
+  }
+}
