@@ -70,6 +70,7 @@ async function buscarParcelas() {
         if (atraso > 0) tr.classList.add("vencida");
 
         tr.innerHTML = `
+          <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" /></td>
           <td>${contrato}</td>
           <td>${p.parcela}</td>
           <td>${formatarData(venc)}</td>
