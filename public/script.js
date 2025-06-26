@@ -57,6 +57,9 @@ async function buscarParcelas() {
       const contrato = item.contrato;
       const parcelasOrdenadas = [...(item.parcelas || [])].sort((a, b) => {
         return new Date(a.datavencimento) - new Date(b.datavencimento);
+        document.querySelectorAll(".selecionar-parcela").forEach(cb => {
+        cb.addEventListener("change", atualizarSelecionado);
+        });    
       });
 
       parcelasOrdenadas.forEach(p => {
