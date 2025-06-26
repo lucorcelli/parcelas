@@ -58,7 +58,6 @@ async function buscarParcelas(cpf) {
 
     const data = await response.json();
 
-    // Pega o nome real da API
     const nomeCompleto = data.itens?.[0]?.cliente?.identificacao?.nome || "";
     const nomeAbreviado = abreviarNome(nomeCompleto);
     const cpfParcial = mascararCpfFinal(cpf);
@@ -68,16 +67,18 @@ async function buscarParcelas(cpf) {
         ? `Cliente: <strong>${nomeAbreviado}</strong> — CPF final <strong>${cpfParcial}</strong>`
         : "";
 
-    // Junta todas as parcelas
     const todasParcelas = [];
+
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
       (item.parcelas || []).forEach(p => {
-        todasParcelas.push({ contrato, ...p });
+        const emAberto = p.capitalaberto > 0 || (p.totalpago || 0) < p.valorvencimento;
+        if (emAberto) {
+          todasParcelas.push({ contrato, ...p });
+        }
       });
     });
 
-    // Ordena por vencimento
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
     let totalGeral = 0;
@@ -135,7 +136,6 @@ document.getElementById("selecionarTodos").addEventListener("click", () => {
   atualizarSelecionado();
 });
 
-// Ao carregar a página, verifica se o CPF veio via URL
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const cpf = params.get("cpf");
