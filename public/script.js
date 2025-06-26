@@ -116,7 +116,7 @@ async function buscarParcelas(cpf) {
         margin-bottom: 20px;">
         <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
         <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} —
-        <strong>Selecionado:</strong> R$ <span id="resumoSelecionado">${totalGeral.toFixed(2).replace(".", ",")}</span></div>
+        <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">${totalSelecionado}</span>
       </div>
     `;
 
