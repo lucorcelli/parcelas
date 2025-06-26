@@ -39,23 +39,27 @@ function calcularValorCorrigidoSimples(valorOriginal, vencimentoStr) {
 }
 
 async function buscarParcelas() {
-  const nome = document.getElementById("nomeCliente").value.trim();
   const cpf = document.getElementById("cpfInput").value.trim();
   if (!cpf) return alert("Digite um CPF válido.");
 
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
 
-  const url = `/api/parcelas?cpf=${cpf}`;
-
   try {
-    const response = await fetch(url);
+    const response = await fetch(`/api/parcelas?cpf=${cpf}`);
     if (!response.ok) throw new Error(`Erro da API: ${response.status}`);
 
     const data = await response.json();
-    let totalGeral = 0;
-    let todasParcelas = [];
 
+    // Pega o nome real do cliente
+    const nome = data.nome || data.itens?.[0]?.nome || "";
+    document.getElementById("nomeCliente").value = nome;
+
+    document.getElementById("dadosCliente").innerHTML =
+      nome && cpf ? `Cliente: <strong>${nome}</strong> — CPF: <strong>${cpf}</strong>` : "";
+
+    // Junta todas as parcelas de todos os contratos
+    const todasParcelas = [];
     (data.itens || []).forEach(item => {
       const contrato = item.contrato;
       (item.parcelas || []).forEach(p => {
@@ -63,11 +67,10 @@ async function buscarParcelas() {
       });
     });
 
+    // Ordena por data de vencimento
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
-    document.getElementById("dadosCliente").innerHTML = nome && cpf
-      ? `Cliente: <strong>${nome}</strong> — CPF: <strong>${cpf}</strong>`
-      : "";
+    let totalGeral = 0;
 
     todasParcelas.forEach(p => {
       if (!p.datavencimento) return;
@@ -102,7 +105,7 @@ async function buscarParcelas() {
 
   } catch (err) {
     console.error("Erro:", err);
-    alert("Erro ao consultar os dados. Verifique o CPF ou a API.");
+    alert("Erro ao consultar os dados. Verifique o CPF ou tente novamente mais tarde.");
   }
 }
 
@@ -125,12 +128,8 @@ document.getElementById("selecionarTodos").addEventListener("click", () => {
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const cpf = params.get("cpf");
-  const nome = params.get("nome");
   if (cpf) {
     document.getElementById("cpfInput").value = cpf;
+    buscarParcelas();
   }
-  if (nome) {
-    document.getElementById("nomeCliente").value = nome;
-  }
-  if (cpf) buscarParcelas();
 });
