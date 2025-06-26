@@ -19,13 +19,13 @@
     font-size: 14px;
   }
 
-  th:nth-child(1), td:nth-child(1) { width: 110px; } /* Contrato */
-  th:nth-child(2), td:nth-child(2) { width: 70px; }  /* Parcela Nº */
-  th:nth-child(3), td:nth-child(3) { width: 100px; } /* Vencimento */
-  th:nth-child(4), td:nth-child(4) { width: 110px; } /* Valor Original */
-  th:nth-child(5), td:nth-child(5) { width: 110px; } /* Valor Corrigido */
-  th:nth-child(6), td:nth-child(6) { width: 110px; } /* Dias Atraso */
-  th:nth-child(7), td:nth-child(7) { width: 50px; }  /* Checkbox */
+  th:nth-child(1), td:nth-child(1) { width: 30px; }   /* Checkbox */
+  th:nth-child(2), td:nth-child(2) { width: 90px; }  /* Contrato */
+  th:nth-child(3), td:nth-child(3) { width: 50px; }   /* Parcela Nº */
+  th:nth-child(4), td:nth-child(4) { width: 70px; }  /* Vencimento */
+  th:nth-child(5), td:nth-child(5) { width: 70px; }  /* Valor Original */
+  th:nth-child(6), td:nth-child(6) { width: 70px; }  /* Valor Corrigido */
+  th:nth-child(7), td:nth-child(7) { width: 70px; }  /* Dias Atraso */
 
   .vencida {
     background-color: #ffe5e5;
