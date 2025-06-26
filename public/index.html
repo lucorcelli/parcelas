@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Consulta de Parcelas</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -26,27 +25,21 @@
       font-size: 14px;
     }
 
-    th:nth-child(1), td:nth-child(1) { width: 50px; }    /* Checkbox */
-    th:nth-child(2), td:nth-child(2) { width: 110px; }   /* Contrato */
-    th:nth-child(3), td:nth-child(3) { width: 70px; }    /* Parcela Nº */
-    th:nth-child(4), td:nth-child(4) { width: 100px; }   /* Vencimento */
-    th:nth-child(5), td:nth-child(5) { width: 110px; }   /* Valor Original */
-    th:nth-child(6), td:nth-child(6) { width: 115px; }   /* Valor Corrigido */
-    th:nth-child(7), td:nth-child(7) { width: 100px; }   /* Dias Atraso */
+    th:nth-child(1), td:nth-child(1) { width: 50px; }
+    th:nth-child(2), td:nth-child(2) { width: 110px; }
+    th:nth-child(3), td:nth-child(3) { width: 70px; }
+    th:nth-child(4), td:nth-child(4) { width: 100px; }
+    th:nth-child(5), td:nth-child(5) { width: 110px; }
+    th:nth-child(6), td:nth-child(6) { width: 115px; }
+    th:nth-child(7), td:nth-child(7) { width: 100px; }
 
     .vencida {
       background-color: #ffe5e5;
     }
 
-    input[type="text"] {
-      padding: 8px;
-      margin-bottom: 10px;
-      box-sizing: border-box;
-    }
-
     button {
       padding: 8px 12px;
-      margin-top: 5px;
+      margin-top: 10px;
       cursor: pointer;
     }
 
@@ -57,11 +50,6 @@
         white-space: nowrap;
       }
 
-      input[type="text"], button {
-        width: 100%;
-        margin-bottom: 10px;
-      }
-
       #selecionarTodos {
         margin-bottom: 15px;
       }
@@ -69,17 +57,7 @@
   </style>
 </head>
 <body>
-  <h1>Parcelas do Cliente</h1>
-
-  <div style="margin-bottom: 20px;">
-  <label>CPF do Cliente:</label><br />
-  <input type="text" id="cpfInput" placeholder="Digite o CPF..." style="width: 200px;" /><br /><br />
-
-  <label>Nome do Cliente:</label><br />
-  <input type="text" id="nomeCliente" readonly style="width: 300px;" />
-  </div>
-
-  <h3 id="dadosCliente" style="margin-top: 20px;"></h3>
+  <h1>Parcelas em Aberto</h1>
 
   <div>
     <button id="selecionarTodos">Selecionar Tudo</button>
@@ -97,15 +75,15 @@
         <th>Dias em Atraso</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Parcelas aparecerão aqui -->
-    </tbody>
+    <tbody></tbody>
   </table>
 
   <div style="margin-top: 20px;">
     <p><strong>Total de Todas as Parcelas:</strong> R$ <span id="totalGeral">0,00</span></p>
     <p><strong>Total Selecionado:</strong> R$ <span id="totalSelecionado">0,00</span></p>
   </div>
+
+  <div id="dadosCliente" style="margin-top: 20px; font-size: 14px; color: #444;"></div>
 
   <script src="script.js"></script>
 </body>
