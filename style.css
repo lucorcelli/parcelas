@@ -1,0 +1,28 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  padding: 2em;
+  background: #f4f4f4;
+}
+
+input {
+  padding: 0.5em;
+  width: 200px;
+  margin-right: 10px;
+}
+
+table {
+  margin: 2em auto;
+  border-collapse: collapse;
+  width: 80%;
+  background: white;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 0.8em;
+}
+
+thead {
+  background-color: #eee;
+}
