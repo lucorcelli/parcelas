@@ -12,7 +12,7 @@ const faixasJuros = [
 function calcularJurosDiario(dias) {
   for (const faixa of faixasJuros) {
     if (dias >= faixa.de && dias <= faixa.ate) {
-      return faixa.taxa / 30 / 100; // mensal → diário
+      return faixa.taxa / 30 / 100;
     }
   }
   return 0;
@@ -25,19 +25,16 @@ function formatarData(dataStr) {
 
 function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   const hoje = new Date();
-  const vencimento = new Date(vencimentoStr);
-  const diasAtraso = Math.floor((hoje - vencimento) / (1000 * 60 * 60 * 24));
+  const venc = new Date(vencimentoStr);
+  const dias = Math.floor((hoje - venc) / (1000 * 60 * 60 * 24));
 
-  if (diasAtraso <= 0) return { corrigido: valorOriginal, atraso: 0 };
+  if (dias <= 0) return { corrigido: valorOriginal, atraso: 0 };
 
-  const jurosDia = calcularJurosDiario(diasAtraso);
+  const jurosDia = calcularJurosDiario(dias);
   const comMulta = valorOriginal * 1.02;
-  const comJuros = comMulta * (1 + jurosDia * diasAtraso);
+  const comJuros = comMulta * (1 + jurosDia * dias);
 
-  return {
-    corrigido: comJuros,
-    atraso: diasAtraso
-  };
+  return { corrigido: comJuros, atraso: dias };
 }
 
 async function buscarParcelas() {
@@ -47,17 +44,13 @@ async function buscarParcelas() {
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
 
-  const url = `https://integracaodatasystem.useserver.com.br/api/v1/personalizado-1/meucrediario/vendas?cpf=${cpf}&dataInicio=2022-01-01&horaIni=00%3A00&dataFim=2025-06-01&horaFim=00%3A00&itensPorPagina=10&pagina=1&baixado=2`;
+  const url = `/api/parcelas?cpf=${cpf}`;
 
   try {
-    const response = await fetch(url, {
-      headers: {
-        accept: "application/json",
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJkYzA0MjFkOTc1YWJiNDliNGY3MTIxNzc2ZTc2MmY3ZDVkZmY5MTRlIl0sImp0aSI6ImI0MzNkMWQxY2Y1NTQxZGJiNzdiOWU3NGMxNTRhNjlmIiwibmFtZWlkIjoiZGMwNDIxZDk3NWFiYjQ5YjRmNzEyMTc3NmU3NjJmN2Q1ZGZmOTE0ZSIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUwOTE4ODk3LCJleHAiOjE3NTEwMDUyOTcsImlhdCI6MTc1MDkxODg5N30.ThjqPjF4Z50l8a4kEpYlHA_Ko12GyY-vCBKdjKZiH5M"
-      }
-    });
+    const response = await fetch(url);
+
     if (!response.ok) {
-       throw new Error(`Erro da API: ${response.status} ${response.statusText}`);
+      throw new Error(`Erro da API: ${response.status}`);
     }
 
     const data = await response.json();
@@ -90,6 +83,6 @@ async function buscarParcelas() {
 
   } catch (err) {
     console.error("Erro:", err);
-    alert("Erro ao consultar a API. Verifique o token ou o CPF digitado.");
+    alert("Ocorreu um erro ao consultar a API.");
   }
 }
