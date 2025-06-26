@@ -1,4 +1,3 @@
-// Tabela de faixas de juros mensais
 const faixasJuros = [
   { de: 1, ate: 59, taxa: 5.01 },
   { de: 60, ate: 365, taxa: 6 },
@@ -10,37 +9,34 @@ const faixasJuros = [
   { de: 2557, ate: 9999, taxa: 0.2 }
 ];
 
-// Retorna a taxa de juros diária com base nos dias de atraso
 function calcularJurosDiario(dias) {
   for (const faixa of faixasJuros) {
     if (dias >= faixa.de && dias <= faixa.ate) {
-      return faixa.taxa / 30 / 100; // mensal → diário
+      return faixa.taxa / 30 / 100;
     }
   }
   return 0;
 }
 
-// Formata data no padrão dd/mm/aaaa
 function formatarData(dataStr) {
   const data = new Date(dataStr);
   return data.toLocaleDateString("pt-BR");
 }
 
-// Cálculo do valor corrigido com multa e juros
 function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   const hoje = new Date();
   const vencimento = new Date(vencimentoStr);
   const diasAtraso = Math.floor((hoje - vencimento) / (1000 * 60 * 60 * 24));
 
-  if (diasAtraso <= 0) return { valorCorrigido: valorOriginal, diasAtraso: 0 };
+  if (diasAtraso <= 0) return { corrigido: valorOriginal, atraso: 0 };
 
   const jurosDia = calcularJurosDiario(diasAtraso);
-  const valorComMulta = valorOriginal * 1.02;
-  const valorComJuros = valorComMulta * (1 + jurosDia * diasAtraso);
+  const comMulta = valorOriginal * 1.02;
+  const comJuros = comMulta * (1 + jurosDia * diasAtraso);
 
   return {
-    valorCorrigido: valorComJuros,
-    diasAtraso: diasAtraso
+    corrigido: comJuros,
+    atraso: diasAtraso
   };
 }
 
@@ -67,30 +63,29 @@ async function buscarParcelas() {
       const contrato = item.contrato;
 
       (item.parcelas || []).forEach(p => {
-        if (p.datavencimento) {
-          const venc = p.datavencimento;
-          const valorOriginal = p.valorvencimento;
-          const { valorCorrigido, diasAtraso } = calcularValorCorrigido(valorOriginal, venc);
+        if (!p.datavencimento) return;
 
-          const row = document.createElement("tr");
-          if (diasAtraso > 0) row.classList.add("vencida");
+        const valorOriginal = p.valorvencimento;
+        const venc = p.datavencimento;
+        const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, venc);
 
-          row.innerHTML = `
-            <td>${contrato}</td>
-            <td>${p.parcela}</td>
-            <td>${formatarData(venc)}</td>
-            <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
-            <td class="valorCorrigido">R$ ${valorCorrigido.toFixed(2).replace(".", ",")}</td>
-            <td class="diasAtraso">${diasAtraso > 0 ? diasAtraso + " dia(s)" : "-"}</td>
-          `;
+        const tr = document.createElement("tr");
+        if (atraso > 0) tr.classList.add("vencida");
 
-          tbody.appendChild(row);
-        }
+        tr.innerHTML = `
+          <td>${contrato}</td>
+          <td>${p.parcela}</td>
+          <td>${formatarData(venc)}</td>
+          <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
+          <td class="valorCorrigido">R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
+          <td class="diasAtraso">${atraso > 0 ? atraso + " dia(s)" : "-"}</td>
+        `;
+        tbody.appendChild(tr);
       });
     });
 
-  } catch (error) {
-    console.error("Erro ao buscar dados:", error);
-    alert("Erro ao consultar a API. Verifique o token ou tente novamente mais tarde.");
+  } catch (err) {
+    console.error("Erro:", err);
+    alert("Algo deu errado ao consultar a API.");
   }
 }
