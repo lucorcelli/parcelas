@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const response = await fetch(url, {
       headers: {
         accept: "application/json",
-        Authorization: "Bearer SEU_TOKEN_AQUI"
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJkYzA0MjFkOTc1YWJiNDliNGY3MTIxNzc2ZTc2MmY3ZDVkZmY5MTRlIl0sImp0aSI6ImI0MzNkMWQxY2Y1NTQxZGJiNzdiOWU3NGMxNTRhNjlmIiwibmFtZWlkIjoiZGMwNDIxZDk3NWFiYjQ5YjRmNzEyMTc3NmU3NjJmN2Q1ZGZmOTE0ZSIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUwOTE4ODk3LCJleHAiOjE3NTEwMDUyOTcsImlhdCI6MTc1MDkxODg5N30.ThjqPjF4Z50l8a4kEpYlHA_Ko12GyY-vCBKdjKZiH5M"
       }
     });
 
