@@ -32,7 +32,6 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   const jurosDia = calcularJurosDiario(dias);
   const comMulta = valorOriginal * 1.02;
   const comJuros = comMulta * (1 + jurosDia * dias);
-
   return { corrigido: comJuros, atraso: dias };
 }
 
@@ -75,29 +74,35 @@ async function buscarParcelas(cpf) {
         const emAberto = p.capitalaberto > 0 || (p.totalpago || 0) < p.valorvencimento;
         if (!p.datavencimento || !emAberto) return;
 
-        const venc = p.datavencimento;
-        const valorOriginal = p.valorvencimento;
-        const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, venc);
-        totalGeral += corrigido;
-
-        const tr = document.createElement("tr");
-        if (atraso > 0) tr.classList.add("vencida");
-
-        tr.innerHTML = `
-          <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
-          <td>${contrato}</td>
-          <td>${p.parcela}</td>
-          <td>${formatarData(venc)}</td>
-          <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
-          <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
-          <td>${atraso > 0 ? `${atraso} dia(s)` : "-"}</td>
-        `;
-
-        tbody.appendChild(tr);
+        todasParcelas.push({ contrato, ...p });
       });
     });
 
-    // Exibir identificação do cliente e totais no topo
+    // ✅ Ordenar antes de montar a tabela
+    todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
+
+    todasParcelas.forEach(p => {
+      const venc = p.datavencimento;
+      const valorOriginal = p.valorvencimento;
+      const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, venc);
+      totalGeral += corrigido;
+
+      const tr = document.createElement("tr");
+      if (atraso > 0) tr.classList.add("vencida");
+
+      tr.innerHTML = `
+        <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
+        <td>${p.contrato}</td>
+        <td>${p.parcela}</td>
+        <td>${formatarData(venc)}</td>
+        <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
+        <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
+        <td>${atraso > 0 ? `${atraso} dia(s)` : "-"}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
     document.getElementById("dadosCliente").innerHTML = `
       <div style="
         background-color: #f5f5f5;
@@ -110,8 +115,8 @@ async function buscarParcelas(cpf) {
         color: #333;
         margin-bottom: 20px;">
         <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
-        <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} — 
-             <strong>Selecionado:</strong> R$ <span id="resumoSelecionado">${totalGeral.toFixed(2).replace(".", ",")}</span></div>
+        <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} —
+        <strong>Selecionado:</strong> R$ <span id="resumoSelecionado">${totalGeral.toFixed(2).replace(".", ",")}</span></div>
       </div>
     `;
 
@@ -134,11 +139,8 @@ function atualizarSelecionado() {
     if (!isNaN(valor)) total += valor;
   });
 
-  const span = document.getElementById("totalSelecionado");
-  if (span) span.textContent = total.toFixed(2).replace(".", ",");
-
-  const resumo = document.getElementById("resumoSelecionado");
-  if (resumo) resumo.textContent = total.toFixed(2).replace(".", ",");
+  const resumoSpan = document.getElementById("resumoSelecionado");
+  if (resumoSpan) resumoSpan.textContent = total.toFixed(2).replace(".", ",");
 }
 
 document.getElementById("selecionarTodos").addEventListener("click", () => {
