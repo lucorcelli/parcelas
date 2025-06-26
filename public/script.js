@@ -87,3 +87,10 @@ async function buscarParcelas() {
     alert("Erro ao consultar os dados. Verifique se o CPF e o token estão corretos.");
   }
 }
+document.getElementById("selecionarTodos").addEventListener("click", () => {
+  const todosCheckboxes = document.querySelectorAll(".selecionar-parcela");
+  const algumSelecionado = Array.from(todosCheckboxes).some(cb => cb.checked);
+
+  todosCheckboxes.forEach(cb => cb.checked = !algumSelecionado);
+  atualizarSelecionado();
+});
