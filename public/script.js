@@ -1,3 +1,58 @@
+const faixasJuros = [
+  { de: 1, ate: 59, taxa: 5.01 },
+  { de: 60, ate: 365, taxa: 6 },
+  { de: 366, ate: 730, taxa: 5 },
+  { de: 731, ate: 1096, taxa: 4 },
+  { de: 1097, ate: 1461, taxa: 3 },
+  { de: 1462, ate: 1826, taxa: 2 },
+  { de: 1827, ate: 2556, taxa: 1 },
+  { de: 2557, ate: 9999, taxa: 0.2 }
+];
+
+function calcularJurosDiario(dias) {
+  for (const faixa of faixasJuros) {
+    if (dias >= faixa.de && dias <= faixa.ate) {
+      return faixa.taxa / 30 / 100;
+    }
+  }
+  return 0;
+}
+
+function mascararCpf(cpf) {
+  if (!cpf) return '';
+  // Mascara tudo, exceto os 3 últimos dígitos
+  return cpf.replace(/^(\d{3})\d+(\d{2})$/, '$1***$2');
+}
+
+function formatarData(dataStr) {
+  const data = new Date(dataStr);
+  if (isNaN(data)) return "-";
+  return data.toLocaleDateString("pt-BR");
+}
+
+function calcularValorCorrigido(valorOriginal, vencimentoStr) {
+  const hoje = new Date();
+  const venc = new Date(vencimentoStr);
+  const dias = Math.floor((hoje - venc) / (1000 * 60 * 60 * 24));
+  if (dias <= 5) return { corrigido: valorOriginal, atraso: dias };
+
+  const jurosDia = calcularJurosDiario(dias);
+  const comMulta = valorOriginal * 1.02;
+  const comJuros = comMulta * (1 + jurosDia * dias);
+  return { corrigido: comJuros, atraso: dias };
+}
+
+function abreviarNome(nome) {
+  if (!nome) return "";
+  return nome.split(" ").map(p => p[0] + ".").join(" ");
+}
+
+function mascararCpfFinal(cpf) {
+  if (!cpf) return "";
+  const numeros = cpf.replace(/\D/g, "").slice(-8);
+  return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
+}
+
 async function buscarParcelas(cpf) {
   if (!cpf) {
     alert("CPF não informado na URL.");
@@ -71,40 +126,40 @@ async function buscarParcelas(cpf) {
     // Mostra as parcelas normalmente
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
-    // Novo bloco: marca todas as vencidas, ou, se não houver vencidas, a primeira a vencer
+    // Prepara as parcelas com os cálculos de atraso e valor corrigido
     const hoje = new Date();
-    const existeVencida = todasParcelas.some(p => {
-      const venc = new Date(p.datavencimento);
-      return venc < hoje;
-    });
-
-    todasParcelas.forEach((p, idx) => {
+    const parcelasComCalculo = todasParcelas.map(p => {
       const venc = new Date(p.datavencimento);
       const valorOriginal = p.valorvencimento;
       const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, p.datavencimento);
       const atrasada = venc < hoje;
+      return { ...p, corrigido, atraso, atrasada };
+    });
+
+    // Verifica se existe alguma vencida
+    const existeVencida = parcelasComCalculo.some(p => p.atrasada);
+
+    parcelasComCalculo.forEach((p, idx) => {
       let checked = "";
 
       if (existeVencida) {
-        // Marca todas as vencidas
-        if (atrasada) checked = "checked";
+        if (p.atrasada) checked = "checked";
       } else {
-        // Se não tem vencida, marca só a primeira a vencer
         if (idx === 0) checked = "checked";
       }
 
-      totalGeral += corrigido;
+      totalGeral += p.corrigido;
 
       htmlString += `
-        <tr class="${atrasada ? "vencida" : ""}">
+        <tr class="${p.atrasada ? "vencida" : ""}">
           <td>
-            <input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${checked} />
+            <input type="checkbox" class="selecionar-parcela" data-valor="${p.corrigido}" ${checked} />
           </td>
           <td>${p.contrato}-${p.parcela}</td>
           <td>${formatarData(p.datavencimento)}</td>
-          <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
-          <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
-          <td>${atrasada ? `${atraso} dia(s)` : "-"}</td>
+          <td>R$ ${p.valorvencimento.toFixed(2).replace(".", ",")}</td>
+          <td>R$ ${p.corrigido.toFixed(2).replace(".", ",")}</td>
+          <td>${p.atrasada ? `${p.atrazo} dia(s)` : "-"}</td>
         </tr>
       `;
     });
@@ -139,3 +194,49 @@ async function buscarParcelas(cpf) {
     alert("Erro ao consultar os dados. Tente novamente mais tarde.");
   }
 }
+
+function atualizarSelecionado() {
+  let total = 0;
+  document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
+    const valor = parseFloat(cb.dataset.valor);
+    if (!isNaN(valor)) total += valor;
+  });
+
+  const resumoSpan = document.getElementById("resumoSelecionado");
+  if (resumoSpan) resumoSpan.textContent = total.toFixed(2).replace(".", ",");
+}
+
+document.getElementById("selecionarTodos").addEventListener("click", () => {
+  const checkboxes = document.querySelectorAll(".selecionar-parcela");
+  const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
+  checkboxes.forEach(cb => cb.checked = !algumMarcado);
+  atualizarSelecionado();
+});
+
+document.getElementById("voltarWhatsapp").addEventListener("click", () => {
+  let total = 0;
+  document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
+    const valor = parseFloat(cb.dataset.valor);
+    if (!isNaN(valor)) total += valor;
+  });
+
+  const mensagem = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}`;
+  const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
+
+  window.open(link, "_blank");
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+  let cpf = token;
+  if (token && /^[A-Za-z0-9+/=]+$/.test(token) && token.length > 11) {
+    // Provavelmente está em base64, decodifica
+    try {
+      cpf = atob(token);
+    } catch (e) {
+      // Se não conseguir decodificar, usa o próprio token (pode ser CPF puro)
+    }
+  }
+  if (cpf && /^\d{11}$/.test(cpf)) buscarParcelas(cpf);
+});
