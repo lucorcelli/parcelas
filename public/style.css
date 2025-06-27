@@ -3,23 +3,44 @@ body {
   max-width: 650px;
   margin: 0 auto;
   padding: 10px;
+  background: #f8fafc;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+h1 {
+  color: #1976d2;
+  font-size: 1.5em;
+  margin: 0 0 12px 0;
+}
+
+#dadosCliente {
+  margin-bottom: 18px;
+}
+
+.table-container {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 0 0 6px 0;
+  margin-bottom: 20px;
 }
 
 table {
   width: 100%;
   font-size: 14px;
   word-break: break-word;
-  background: #fff;
-  border-radius: 7px;
-  box-shadow: 0px 2px 16px #0001;
-  margin-bottom: 18px;
   border-collapse: separate;
   border-spacing: 0;
+  background: #fff;
 }
 
 th, td {
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #e0e0e0;
   text-align: center;
   font-size: 14px;
 }
@@ -35,14 +56,55 @@ tr.vencida {
 }
 
 th:nth-child(1), td:nth-child(1) { width: 50px; }
-th:nth-child(2), td:nth-child(2) { width: 150px; } /* Contrato-Parcela mais largo */
+th:nth-child(2), td:nth-child(2) { width: 150px; }
 th:nth-child(3), td:nth-child(3) { width: 100px; }
 th:nth-child(4), td:nth-child(4) { width: 110px; }
 th:nth-child(5), td:nth-child(5) { width: 110px; }
 th:nth-child(6), td:nth-child(6) { width: 70px; }
 
-/* Responsividade para mobile */
-@media (max-width: 768px) {
+.botoes-lado-a-lado {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin: 24px 0 28px 0;
+}
+.botoes-lado-a-lado button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 170px;
+  font-size: 1.13em;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 18px;
+  box-shadow: 0 2px 6px #0002;
+  cursor: pointer;
+  transition: background 0.22s;
+}
+.botoes-lado-a-lado button:hover,
+.botoes-lado-a-lado button:focus {
+  background: #1256a2;
+}
+.botao-icone {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 6px;
+}
+
+@media (max-width: 600px) {
+  .botoes-lado-a-lado {
+    flex-direction: row;
+    gap: 6px;
+  }
+  .botoes-lado-a-lado button {
+    font-size: 1em;
+    min-width: 0;
+    flex: 1 1 auto;
+    padding: 18px 4px;
+  }
   table {
     display: block;
     overflow-x: auto;
