@@ -10,7 +10,13 @@ header {
   text-align: center;
   margin-bottom: 16px;
 }
-
+header img {
+  display: block;
+  margin: 0 auto 8px auto;
+  max-width: 80px;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px #0002;
+}
 h1 {
   color: #1976d2;
   font-size: 1.5em;
@@ -49,6 +55,7 @@ th {
   background: #f2f6fa;
   color: #1976d2;
   font-weight: bold;
+  border-top: none;
 }
 
 tr.vencida {
@@ -62,6 +69,7 @@ th:nth-child(4), td:nth-child(4) { width: 110px; }
 th:nth-child(5), td:nth-child(5) { width: 110px; }
 th:nth-child(6), td:nth-child(6) { width: 70px; }
 
+/* Botões modernos com sombra */
 .botoes-lado-a-lado {
   display: flex;
   gap: 16px;
@@ -78,15 +86,16 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   background: #1976d2;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 7px;
   padding: 12px 18px;
-  box-shadow: 0 2px 6px #0002;
+  box-shadow: 0 4px 24px #1976d266, 0 2px 6px #0002;
   cursor: pointer;
-  transition: background 0.22s;
+  transition: background 0.22s, box-shadow 0.18s;
 }
 .botoes-lado-a-lado button:hover,
 .botoes-lado-a-lado button:focus {
   background: #1256a2;
+  box-shadow: 0 6px 28px #1976d288, 0 2px 6px #0003;
 }
 .botao-icone {
   display: inline-flex;
@@ -94,6 +103,7 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   margin-right: 6px;
 }
 
+/* Responsivo para mobile */
 @media (max-width: 600px) {
   .botoes-lado-a-lado {
     flex-direction: row;
