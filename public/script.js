@@ -239,4 +239,23 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
   if (cpf && /^\d{11}$/.test(cpf)) buscarParcelas(cpf);
+  // Abrir modal Pix
+document.getElementById("abrirPix").addEventListener("click", () => {
+  document.getElementById("modalPix").style.display = "flex";
+});
+// Fechar modal Pix
+document.getElementById("fecharModalPix").addEventListener("click", () => {
+  document.getElementById("modalPix").style.display = "none";
+});
+// Fechar ao clicar fora do conteúdo
+document.getElementById("modalPix").addEventListener("click", (e) => {
+  if (e.target.id === "modalPix") document.getElementById("modalPix").style.display = "none";
+});
+// Função copiar chave Pix
+function copiarChave(id) {
+  const chave = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(chave).then(() => {
+    alert("Chave Pix copiada!");
+  });
+}
 });
