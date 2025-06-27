@@ -1,66 +1,85 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Consulta de Parcelas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+
+    table {
+      width: 100%;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th:nth-child(1), td:nth-child(1) { width: 50px; }
+    th:nth-child(2), td:nth-child(2) { width: 110px; }
+    th:nth-child(3), td:nth-child(3) { width: 70px; }
+    th:nth-child(4), td:nth-child(4) { width: 100px; }
+    th:nth-child(5), td:nth-child(5) { width: 110px; }
+    th:nth-child(6), td:nth-child(6) { width: 110px; }
+    th:nth-child(7), td:nth-child(7) { width: 70px; }
+
+    .vencida {
+      background-color: #ffe5e5;
+    }
+
+    button {
+      padding: 8px 12px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      #selecionarTodos {
+        margin-bottom: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <main>
-    <h1>Consulta de Parcelas</h1>
-    <div id="status">Carregando...</div>
-    <div id="parcelas"></div>
-  </main>
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get("token");
-      if (token) {
-        let cpf;
-        try {
-          cpf = atob(token);
-        } catch (e) {
-          cpf = null;
-        }
-        if (cpf && /^\d{11}$/.test(cpf)) {
-          document.getElementById("status").textContent = "Consultando parcelas para o CPF informado...";
-          buscarParcelas(cpf);
-        } else {
-          document.getElementById("status").textContent = "Token inválido!";
-        }
-      } else {
-        document.getElementById("status").textContent = "Token não encontrado na URL.";
-      }
-    });
+  <h1>Parcelas em Aberto</h1>
+  <div id="dadosCliente" style="margin-top: 20px; font-size: 14px; color: #444;"></div>
+  
+  <div class="botoes-acao">
+    <button id="selecionarTodos">Selecionar Tudo</button>
+    <button id="voltarWhatsapp">Voltar WhatsApp</button>
+  </div>
 
-    // Exemplo de função para buscar parcelas (AJUSTE para sua API!):
-    function buscarParcelas(cpf) {
-      fetch(`/api/parcelas?cpf=${cpf}`)
-        .then(resp => {
-          if (!resp.ok) throw new Error("Erro ao consultar API");
-          return resp.json();
-        })
-        .then(dados => {
-          if (!dados || !dados.parcelas || !dados.parcelas.length) {
-            document.getElementById("status").textContent = "Nenhuma parcela encontrada para o CPF.";
-            return;
-          }
-          document.getElementById("status").textContent = "";
-          const ul = document.createElement("ul");
-          dados.parcelas.forEach(parcela => {
-            const li = document.createElement("li");
-            li.textContent = `Vencimento: ${parcela.vencimento} | Valor: R$ ${parcela.valor} | Situação: ${parcela.situacao}`;
-            ul.appendChild(li);
-          });
-          document.getElementById("parcelas").appendChild(ul);
-        })
-        .catch(err => {
-          document.getElementById("status").textContent = "Erro ao buscar parcelas.";
-        });
-    }
-  </script>
+    <table id="tabelaParcelas">
+    <thead>
+      <tr>
+        <th>Selecionar</th>
+        <th>Contrato</th>
+        <th>Parcela</th>
+        <th>Vencimento</th>
+        <th>Valor Original</th>
+        <th>Valor Corrigido</th>
+        <th>Dias Atraso</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script src="script.js"></script>
 </body>
 </html>
