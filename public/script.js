@@ -135,8 +135,7 @@ async function buscarParcelas(cpf) {
       htmlString += `
         <tr class="${atraso > 0 ? "vencida" : ""}">
           <td><input type="checkbox" class="selecionar-parcela" data-valor="${corrigido}" ${atraso > 0 ? "checked" : ""} /></td>
-          <td>${p.contrato}</td>
-          <td>${p.parcela}</td>
+          <td>${p.contrato}-${p.parcela}</td>
           <td>${formatarData(venc)}</td>
           <td>R$ ${valorOriginal.toFixed(2).replace(".", ",")}</td>
           <td>R$ ${corrigido.toFixed(2).replace(".", ",")}</td>
