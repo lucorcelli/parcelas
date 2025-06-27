@@ -55,10 +55,10 @@ th {
 
 .botoes-acao button {
   width: 100%;
-  padding: 24px 0;
-  font-size: 1.5em;
+  padding: 28px 0;             /* Aumenta altura do botão */
+  font-size: 2em;              /* Aumenta fonte do botão */
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;         /* Bordas mais arredondadas */
   background-color: #1976d2;
   color: #fff;
   font-weight: 700;
@@ -83,23 +83,23 @@ th {
     font-size: 1.3rem;
   }
   #dadosCliente {
-    font-size: 1.05em;
+    font-size: 1.1em;
   }
   table {
     font-size: 1em;
   }
   th, td {
     padding: 10px 2px;
-    font-size: 0.99em;
+    font-size: 1em;
   }
   .botoes-acao {
-    gap: 15px;
+    gap: 16px;
     margin-top: 24px;
   }
   .botoes-acao button {
-    padding: 18px 0;
-    font-size: 1.15em;
-    border-radius: 10px;
+    padding: 26px 0;
+    font-size: 1.7em;
+    border-radius: 16px;
   }
 }
 
