@@ -20,6 +20,7 @@ function calcularJurosDiario(dias) {
 
 function formatarData(dataStr) {
   const data = new Date(dataStr);
+  if (isNaN(data)) return "-";
   return data.toLocaleDateString("pt-BR");
 }
 
@@ -73,9 +74,7 @@ async function buscarParcelas(cpf) {
 
       const abertas = (item.parcelas || []).filter(p => {
         if (!p.datavencimento) return false;
-       // const emAberto = p.capitalaberto > 0 || (p.totalpago || 0) < p.valorvencimento;
         const emAberto = p.capitalaberto > 0 && p.valorvencimento > 0;
-
         return emAberto;
       });
 
@@ -83,6 +82,34 @@ async function buscarParcelas(cpf) {
         todasParcelas.push({ contrato, ...p });
       });
     });
+
+    // Verifica se existem parcelas em aberto
+    if (todasParcelas.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
+            Nenhuma parcela em aberto para este cliente. 🎉
+          </td>
+        </tr>
+      `;
+      document.getElementById("dadosCliente").innerHTML = `
+        <div style="
+          background-color: #f5f5f5;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          padding: 12px 16px;
+          font-family: Arial, sans-serif;
+          font-size: 15px;
+          line-height: 1.6;
+          color: #333;
+          margin-bottom: 20px;">
+          <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
+          <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">0,00</span></div>
+        </div>
+      `;
+      atualizarSelecionado();
+      return;
+    }
 
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
@@ -166,6 +193,7 @@ document.getElementById("voltarWhatsapp").addEventListener("click", () => {
 
   window.open(link, "_blank");
 });
+
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const cpf = params.get("token"); // pegando CPF pelo novo parâmetro "token"
