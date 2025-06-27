@@ -6,9 +6,16 @@ body {
   background: #f8fafc;
 }
 
+/* Faixa azul no topo */
 header {
+  background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
+  color: #fff;
+  padding: 28px 0 18px 0;
+  margin: -10px -10px 22px -10px;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 2px 20px #1976d220;
   text-align: center;
-  margin-bottom: 16px;
+  position: relative;
 }
 header img {
   display: block;
@@ -16,11 +23,16 @@ header img {
   max-width: 80px;
   border-radius: 14px;
   box-shadow: 0 2px 12px #0002;
+  background: #fff;
+  padding: 6px;
 }
 h1 {
-  color: #1976d2;
-  font-size: 1.5em;
-  margin: 0 0 12px 0;
+  color: #fff;
+  font-size: 1.8em;
+  margin: 6px 0 0 0;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-shadow: 0px 2px 10px #1565c066;
 }
 
 #dadosCliente {
@@ -30,7 +42,7 @@ h1 {
 .table-container {
   background: #fff;
   border-radius: 7px;
-  box-shadow: 0 2px 16px #0001;
+  box-shadow: 0 2px 16px #1976d210;
   padding: 0 0 6px 0;
   margin-bottom: 20px;
 }
@@ -52,7 +64,7 @@ th, td {
 }
 
 th {
-  background: #f2f6fa;
+  background: #e3edfa;
   color: #1976d2;
   font-weight: bold;
   border-top: none;
@@ -105,6 +117,9 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
 
 /* Responsivo para mobile */
 @media (max-width: 600px) {
+  body {
+    padding: 3px;
+  }
   .botoes-lado-a-lado {
     flex-direction: row;
     gap: 6px;
