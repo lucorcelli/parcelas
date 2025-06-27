@@ -197,12 +197,15 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   box-shadow: 0 8px 32px #1976d244, 0 1.5px 6px #0002;
   text-align: left;
 }
-.fechar-modal-pix {
-  position: absolute;
-  right: 11px; top: 7px;
-  font-size: 1.7em;
-  cursor: pointer;
-  color: #1976d2;
+.modal-pix {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.28);
+  justify-content: center;
+  align-items: center;
 }
 .pix-opcao {
   display: flex;
