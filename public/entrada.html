@@ -6,13 +6,16 @@
   <script>
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
-      const cpf = params.get('cpf');
-      if (cpf && /^\d{11}$/.test(cpf)) {
-        const token = btoa(cpf); // Base64!
-        window.location.href = "/index.html?token=" + encodeURIComponent(token);
-      } else {
-        document.body.innerHTML = "CPF não informado ou inválido.";
+      let cpf = params.get('cpf');
+      if (cpf) {
+        cpf = cpf.replace(/\D/g, ''); // Remove tudo que não for número
+        if (/^\d{11}$/.test(cpf)) {
+          const token = btoa(cpf); // Base64!
+          window.location.href = "/index.html?token=" + encodeURIComponent(token);
+          return;
+        }
       }
+      document.body.innerHTML = "CPF não informado ou inválido.";
     }
   </script>
 </head>
