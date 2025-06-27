@@ -61,6 +61,21 @@ async function buscarParcelas(cpf) {
     if (!response.ok) throw new Error(`Erro da API: ${response.status}`);
 
     const data = await response.json();
+
+    // Se não houver itens, mostre mensagem amigável e pare aqui!
+    if (!data.itens || !data.itens.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
+            Nenhuma parcela em aberto para este cliente. 🎉
+          </td>
+        </tr>
+      `;
+      document.getElementById("dadosCliente").innerHTML = "";
+      atualizarSelecionado();
+      return;
+    }
+
     const nomeCompleto = data.itens?.[0]?.cliente?.identificacao?.nome || "";
     const nomeAbreviado = abreviarNome(nomeCompleto);
     const cpfParcial = mascararCpfFinal(cpf);
