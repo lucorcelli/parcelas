@@ -1,31 +1,55 @@
-.botoes-lado-a-lado {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin: 24px 0 28px 0;
+body {
+  font-family: Arial, sans-serif;
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 10px;
 }
-.botoes-lado-a-lado button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  min-width: 170px;
-  font-size: 1.13em;
+
+table {
+  width: 100%;
+  font-size: 14px;
+  word-break: break-word;
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0px 2px 16px #0001;
+  margin-bottom: 18px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
-.botao-icone {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 6px;
+
+th, td {
+  padding: 8px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 14px;
 }
-@media (max-width: 600px) {
-  .botoes-lado-a-lado {
-    flex-direction: row;
-    gap: 6px;
+
+th {
+  background: #f2f6fa;
+  color: #1976d2;
+  font-weight: bold;
+}
+
+tr.vencida {
+  background-color: #ffe5e5;
+}
+
+th:nth-child(1), td:nth-child(1) { width: 50px; }
+th:nth-child(2), td:nth-child(2) { width: 150px; } /* Contrato-Parcela mais largo */
+th:nth-child(3), td:nth-child(3) { width: 100px; }
+th:nth-child(4), td:nth-child(4) { width: 110px; }
+th:nth-child(5), td:nth-child(5) { width: 110px; }
+th:nth-child(6), td:nth-child(6) { width: 70px; }
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
-  .botoes-lado-a-lado button {
-    font-size: 1em;
-    min-width: 0;
-    flex: 1 1 auto;
-    padding: 16px 4px;
+  th, td {
+    font-size: 13px;
+    padding: 6px;
   }
 }
