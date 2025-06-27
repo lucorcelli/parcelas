@@ -1,50 +1,3 @@
-const faixasJuros = [
-  { de: 1, ate: 59, taxa: 5.01 },
-  { de: 60, ate: 365, taxa: 6 },
-  { de: 366, ate: 730, taxa: 5 },
-  { de: 731, ate: 1096, taxa: 4 },
-  { de: 1097, ate: 1461, taxa: 3 },
-  { de: 1462, ate: 1826, taxa: 2 },
-  { de: 1827, ate: 2556, taxa: 1 },
-  { de: 2557, ate: 9999, taxa: 0.2 }
-];
-
-function calcularJurosDiario(dias) {
-  for (const faixa of faixasJuros) {
-    if (dias >= faixa.de && dias <= faixa.ate) {
-      return faixa.taxa / 30 / 100;
-    }
-  }
-  return 0;
-}
-
-function formatarData(dataStr) {
-  const data = new Date(dataStr);
-  if (isNaN(data)) return "-";
-  return data.toLocaleDateString("pt-BR");
-}
-
-function calcularValorCorrigido(valorOriginal, vencimentoStr) {
-  const hoje = new Date();
-  const venc = new Date(vencimentoStr);
-  const dias = Math.floor((hoje - venc) / (1000 * 60 * 60 * 24));
-  if (dias <= 5) return { corrigido: valorOriginal, atraso: dias };
-
-  const jurosDia = calcularJurosDiario(dias);
-  const comMulta = valorOriginal * 1.02;
-  const comJuros = comMulta * (1 + jurosDia * dias);
-  return { corrigido: comJuros, atraso: dias };
-}
-
-function abreviarNome(nome) {
-  return nome.split(" ").map(p => p[0] + ".").join(" ");
-}
-
-function mascararCpfFinal(cpf) {
-  const numeros = cpf.replace(/\D/g, "").slice(-8);
-  return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
-}
-
 async function buscarParcelas(cpf) {
   if (!cpf) {
     alert("CPF não informado na URL.");
@@ -62,8 +15,8 @@ async function buscarParcelas(cpf) {
 
     const data = await response.json();
 
-    // Se não houver itens, mostre mensagem amigável e pare aqui!
-    if (!data.itens || !data.itens.length) {
+    // Verifica se data.itens existe e tem pelo menos 1 item
+    if (!data.itens || !Array.isArray(data.itens) || data.itens.length === 0) {
       tbody.innerHTML = `
         <tr>
           <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
@@ -76,7 +29,7 @@ async function buscarParcelas(cpf) {
       return;
     }
 
-    const nomeCompleto = data.itens?.[0]?.cliente?.identificacao?.nome || "";
+    const nomeCompleto = data.itens[0]?.cliente?.identificacao?.nome || "";
     const nomeAbreviado = abreviarNome(nomeCompleto);
     const cpfParcial = mascararCpfFinal(cpf);
 
@@ -84,7 +37,7 @@ async function buscarParcelas(cpf) {
     let htmlString = "";
     const todasParcelas = [];
 
-    (data.itens || []).forEach(item => {
+    data.itens.forEach(item => {
       const contrato = item.contrato;
 
       const abertas = (item.parcelas || []).filter(p => {
@@ -98,7 +51,6 @@ async function buscarParcelas(cpf) {
       });
     });
 
-    // Verifica se existem parcelas em aberto
     if (todasParcelas.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -174,43 +126,6 @@ async function buscarParcelas(cpf) {
 
   } catch (err) {
     console.error("Erro:", err);
-    alert("Erro ao consultar os dados. Verifique o CPF ou tente novamente mais tarde.");
+    alert("Erro ao consultar os dados. Tente novamente mais tarde.");
   }
 }
-
-function atualizarSelecionado() {
-  let total = 0;
-  document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
-    const valor = parseFloat(cb.dataset.valor);
-    if (!isNaN(valor)) total += valor;
-  });
-
-  const resumoSpan = document.getElementById("resumoSelecionado");
-  if (resumoSpan) resumoSpan.textContent = total.toFixed(2).replace(".", ",");
-}
-
-document.getElementById("selecionarTodos").addEventListener("click", () => {
-  const checkboxes = document.querySelectorAll(".selecionar-parcela");
-  const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
-  checkboxes.forEach(cb => cb.checked = !algumMarcado);
-  atualizarSelecionado();
-});
-
-document.getElementById("voltarWhatsapp").addEventListener("click", () => {
-  let total = 0;
-  document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
-    const valor = parseFloat(cb.dataset.valor);
-    if (!isNaN(valor)) total += valor;
-  });
-
-  const mensagem = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}`;
-  const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
-
-  window.open(link, "_blank");
-});
-
-window.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const cpf = params.get("token"); // pegando CPF pelo novo parâmetro "token"
-  if (cpf) buscarParcelas(cpf);
-});
