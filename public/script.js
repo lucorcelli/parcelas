@@ -18,6 +18,12 @@ function calcularJurosDiario(dias) {
   return 0;
 }
 
+function mascararCpf(cpf) {
+  if (!cpf) return '';
+  // Mascara tudo, exceto os 3 últimos dígitos
+  return cpf.replace(/^(\d{3})\d+(\d{2})$/, '$1***$2');
+}
+
 function formatarData(dataStr) {
   const data = new Date(dataStr);
   if (isNaN(data)) return "-";
