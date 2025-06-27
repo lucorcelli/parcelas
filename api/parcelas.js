@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const response = await fetch(url, {
       headers: {
         accept: "application/json",
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJkYzA0MjFkOTc1YWJiNDliNGY3MTIxNzc2ZTc2MmY3ZDVkZmY5MTRlIl0sImp0aSI6ImI0MzNkMWQxY2Y1NTQxZGJiNzdiOWU3NGMxNTRhNjlmIiwibmFtZWlkIjoiZGMwNDIxZDk3NWFiYjQ5YjRmNzEyMTc3NmU3NjJmN2Q1ZGZmOTE0ZSIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUwOTE4ODk3LCJleHAiOjE3NTEwMDUyOTcsImlhdCI6MTc1MDkxODg5N30.ThjqPjF4Z50l8a4kEpYlHA_Ko12GyY-vCBKdjKZiH5M"
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJkYzA0MjFkOTc1YWJiNDliNGY3MTIxNzc2ZTc2MmY3ZDVkZmY5MTRlIl0sImp0aSI6ImNiOGJiYzQ2MThkMjRmYWE5M2VmNjQzODhkMWE4M2RiIiwibmFtZWlkIjoiZGMwNDIxZDk3NWFiYjQ5YjRmNzEyMTc3NmU3NjJmN2Q1ZGZmOTE0ZSIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUxMDA1MzI4LCJleHAiOjE3NTEwOTE3MjgsImlhdCI6MTc1MTAwNTMyOH0.pmY4GanrFkQBu2y81feifc0Ul3zMU-rtIC6uipZIImM"
       }
     });
 
