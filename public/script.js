@@ -15,21 +15,11 @@ async function buscarParcelas(cpf) {
 
     const data = await response.json();
 
-    // Verifica se data.itens existe e tem pelo menos 1 item
-    if (!data.itens || !Array.isArray(data.itens) || data.itens.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
-            Nenhuma parcela em aberto para este cliente. 🎉
-          </td>
-        </tr>
-      `;
-      document.getElementById("dadosCliente").innerHTML = "";
-      atualizarSelecionado();
-      return;
-    }
+    // Garante que data.itens é array (nem sempre vem assim!)
+    const itens = Array.isArray(data.itens) ? data.itens : [];
 
-    const nomeCompleto = data.itens[0]?.cliente?.identificacao?.nome || "";
+    // Pega nome/CPF, se possível, mesmo que não tenha parcelas
+    const nomeCompleto = itens[0]?.cliente?.identificacao?.nome || "";
     const nomeAbreviado = abreviarNome(nomeCompleto);
     const cpfParcial = mascararCpfFinal(cpf);
 
@@ -37,20 +27,19 @@ async function buscarParcelas(cpf) {
     let htmlString = "";
     const todasParcelas = [];
 
-    data.itens.forEach(item => {
+    // Junta todas as parcelas em aberto de todos os contratos
+    itens.forEach(item => {
       const contrato = item.contrato;
-
       const abertas = (item.parcelas || []).filter(p => {
         if (!p.datavencimento) return false;
-        const emAberto = p.capitalaberto > 0 && p.valorvencimento > 0;
-        return emAberto;
+        return p.capitalaberto > 0 && p.valorvencimento > 0;
       });
-
       abertas.forEach(p => {
         todasParcelas.push({ contrato, ...p });
       });
     });
 
+    // Caso não haja NENHUMA parcela em aberto (mas pode ter contratos!)
     if (todasParcelas.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -59,7 +48,7 @@ async function buscarParcelas(cpf) {
           </td>
         </tr>
       `;
-      document.getElementById("dadosCliente").innerHTML = `
+      document.getElementById("dadosCliente").innerHTML = nomeCompleto ? `
         <div style="
           background-color: #f5f5f5;
           border: 1px solid #ccc;
@@ -73,11 +62,12 @@ async function buscarParcelas(cpf) {
           <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
           <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">0,00</span></div>
         </div>
-      `;
+      ` : "";
       atualizarSelecionado();
       return;
     }
 
+    // Agora monta as linhas normalmente para quem deve!
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
     todasParcelas.forEach(p => {
