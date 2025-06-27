@@ -3,25 +3,20 @@
 <head>
   <meta charset="utf-8">
   <title>Redirecionando...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
       const cpf = params.get('cpf');
       if (cpf && /^\d{11}$/.test(cpf)) {
-        const token = btoa(cpf);
+        const token = btoa(cpf); // Base64!
         window.location.href = "/index.html?token=" + encodeURIComponent(token);
       } else {
         document.body.innerHTML = "CPF não informado ou inválido.";
       }
     }
   </script>
-  <style>
-    body { font-family: Arial, sans-serif; display: flex; min-height: 100vh; justify-content: center; align-items: center; background: #f0f3f8; }
-    #msg { font-size: 1.2em; color: #1976d2; }
-  </style>
 </head>
 <body>
-  <div id="msg">Redirecionando...</div>
+  <div>Redirecionando...</div>
 </body>
 </html>
