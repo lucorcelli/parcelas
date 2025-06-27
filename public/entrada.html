@@ -1,22 +1,27 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Redirecionando...</title>
-    <script>
-      window.onload = function() {
-        const params = new URLSearchParams(window.location.search);
-        const cpf = params.get('cpf');
-        if (cpf) {
-          const token = btoa(cpf);
-          window.location.href = '/consulta?token=' + encodeURIComponent(token);
-        } else {
-          document.body.innerHTML = "CPF não informado.";
-        }
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Redirecionando...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    window.onload = function() {
+      const params = new URLSearchParams(window.location.search);
+      const cpf = params.get('cpf');
+      if (cpf && /^\d{11}$/.test(cpf)) {
+        const token = btoa(cpf);
+        window.location.href = "/index.html?token=" + encodeURIComponent(token);
+      } else {
+        document.body.innerHTML = "CPF não informado ou inválido.";
       }
-    </script>
-  </head>
-  <body>
-    Redirecionando...
-  </body>
+    }
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; min-height: 100vh; justify-content: center; align-items: center; background: #f0f3f8; }
+    #msg { font-size: 1.2em; color: #1976d2; }
+  </style>
+</head>
+<body>
+  <div id="msg">Redirecionando...</div>
+</body>
 </html>
