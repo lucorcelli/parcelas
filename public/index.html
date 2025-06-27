@@ -5,81 +5,38 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Consulta de Parcelas</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 650px;
-      margin: 0 auto;
-      padding: 10px;
-    }
-
-    table {
-      width: 100%;
-      font-size: 14px;
-      word-break: break-word;
-    }
-
-    th, td {
-      padding: 8px;
-      border: 1px solid #ccc;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    th:nth-child(1), td:nth-child(1) { width: 50px; }
-    th:nth-child(2), td:nth-child(2) { width: 110px; }
-    th:nth-child(3), td:nth-child(3) { width: 70px; }
-    th:nth-child(4), td:nth-child(4) { width: 100px; }
-    th:nth-child(5), td:nth-child(5) { width: 110px; }
-    th:nth-child(6), td:nth-child(6) { width: 110px; }
-    th:nth-child(7), td:nth-child(7) { width: 70px; }
-
-    .vencida {
-      background-color: #ffe5e5;
-    }
-
-    button {
-      padding: 8px 12px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-
-    @media (max-width: 768px) {
-      table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-
-      #selecionarTodos {
-        margin-bottom: 15px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Parcelas em Aberto</h1>
-  <div id="dadosCliente" style="margin-top: 20px; font-size: 14px; color: #444;"></div>
+  <header>
+    <!-- Opcional: coloque seu logo substituindo logo.png -->
+    <img src="logo.png" alt="Logo da Empresa" style="display:block;margin:0 auto 8px;max-width:80px;border-radius:14px;box-shadow:0 2px 12px #0002;">
+    <h1>Parcelas em Aberto</h1>
+  </header>
+
+  <div id="dadosCliente" style="margin-top: 20px;"></div>
   
   <div class="botoes-acao">
     <button id="selecionarTodos">Selecionar Tudo</button>
     <button id="voltarWhatsapp">Voltar WhatsApp</button>
   </div>
 
+  <div class="table-container">
     <table id="tabelaParcelas">
-    <thead>
-      <tr>
-        <th>Selecionar</th>
-        <th>Contrato</th>
-        <th>Parcela</th>
-        <th>Vencimento</th>
-        <th>Valor Original</th>
-        <th>Valor Corrigido</th>
-        <th>Dias Atraso</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+      <thead>
+        <tr>
+          <th>Selecionar</th>
+          <th>Contrato</th>
+          <th>Parcela</th>
+          <th>Vencimento</th>
+          <th>Valor Original</th>
+          <th>Valor Corrigido</th>
+          <th>Dias Atraso</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
