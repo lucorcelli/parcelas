@@ -209,6 +209,15 @@ document.getElementById("voltarWhatsapp").addEventListener("click", () => {
 
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
-  const cpf = params.get("token"); // pegando CPF pelo novo parâmetro "token"
-  if (cpf) buscarParcelas(cpf);
+  const token = params.get("token");
+  let cpf = token;
+  if (token && /^[A-Za-z0-9+/=]+$/.test(token) && token.length > 11) {
+    // Provavelmente está em base64, decodifica
+    try {
+      cpf = atob(token);
+    } catch (e) {
+      // Se não conseguir decodificar, usa o próprio token (pode ser CPF puro)
+    }
+  }
+  if (cpf && /^\d{11}$/.test(cpf)) buscarParcelas(cpf);
 });
