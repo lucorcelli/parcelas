@@ -198,12 +198,6 @@ function atualizarSelecionado() {
   if (resumoSpan) resumoSpan.textContent = total.toFixed(2).replace(".", ",");
 }
 
-document.getElementById("selecionarTodos").addEventListener("click", () => {
-  const checkboxes = document.querySelectorAll(".selecionar-parcela");
-  const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
-  checkboxes.forEach(cb => cb.checked = !algumMarcado);
-  atualizarSelecionado();
-});
 
 document.getElementById("voltarWhatsapp").addEventListener("click", () => {
   let total = 0;
@@ -212,7 +206,7 @@ document.getElementById("voltarWhatsapp").addEventListener("click", () => {
     if (!isNaN(valor)) total += valor;
   });
 
-  const mensagem = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}`;
+  const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}`;
   const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
 
   window.open(link, "_blank");
@@ -264,15 +258,31 @@ function mostrarToast(msg) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  const btnSelecionarTodos = document.getElementById("selecionarTodos");
-  if (btnSelecionarTodos) {
-    btnSelecionarTodos.addEventListener("click", () => {
-      const checkboxes = document.querySelectorAll(".selecionar-parcela");
-      const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
-      checkboxes.forEach(cb => cb.checked = !algumMarcado);
+  // Função para atualizar o texto do botão Selecionar/Desmarcar
+function atualizarBotaoSelecionarTodos() {
+  const checkboxes = document.querySelectorAll(".selecionar-parcela");
+  const todosMarcados = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+  document.getElementById("selecionarTodos").textContent = todosMarcados ? "Desmarcar tudo" : "Selecionar tudo";
+}
+
+// Evento do botão Selecionar/Desmarcar tudo
+document.getElementById("selecionarTodos").addEventListener("click", function() {
+  const checkboxes = document.querySelectorAll(".selecionar-parcela");
+  const todosMarcados = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+  checkboxes.forEach(cb => cb.checked = !todosMarcados);
+  atualizarSelecionado();
+  atualizarBotaoSelecionarTodos();
+});
+
+// Sempre que as checkboxes mudam, atualiza o texto do botão
+function adicionarEventoCheckboxes() {
+  document.querySelectorAll(".selecionar-parcela").forEach(cb => {
+    cb.addEventListener("change", function() {
       atualizarSelecionado();
+      atualizarBotaoSelecionarTodos();
     });
-  }
+  });
+}
 
 
   // ✅ Botão Voltar WhatsApp
