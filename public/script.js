@@ -254,8 +254,17 @@ document.getElementById("modalPix").addEventListener("click", (e) => {
 // Função copiar chave Pix
 function copiarChave(id) {
   const chave = document.getElementById(id).innerText;
-  navigator.clipboard.writeText(chave).then(() => {
-    alert("Chave Pix copiada!");
-  });
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(chave)
+      .then(() => {
+        alert("Chave Pix copiada!");
+      })
+      .catch(() => {
+        alert("Não foi possível copiar. Tente copiar manualmente.");
+      });
+  } else {
+    alert("Não foi possível copiar. Tente copiar manualmente.");
+  }
+}
 }
 });
