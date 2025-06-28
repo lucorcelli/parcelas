@@ -263,15 +263,56 @@ function mostrarToast(msg) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get("token");
-  let cpf = token;
-  if (token && /^[A-Za-z0-9+/=]+$/.test(token) && token.length > 11) {
-    try {
-      cpf = atob(token);
-    } catch (e) {
-      // Se não conseguir decodificar, usa o próprio token (pode ser CPF puro)
-    }
+  // ✅ Botão Selecionar Todos
+  const btnSelecionarTodos = document.getElementById("selecionarTodos");
+  if (btnSelecionarTodos) {
+    btnSelecionarTodos.addEventListener("click", () => {
+      const checkboxes = document.querySelectorAll(".selecionar-parcela");
+      const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
+      checkboxes.forEach(cb => cb.checked = !algumMarcado);
+      atualizarSelecionado();
+    });
   }
-  if (cpf && /^\d{11}$/.test(cpf)) buscarParcelas(cpf);
+
+  // ✅ Botão Voltar WhatsApp
+  const btnVoltar = document.getElementById("voltarWhatsapp");
+  if (btnVoltar) {
+    btnVoltar.addEventListener("click", () => {
+      let total = 0;
+      document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
+        const valor = parseFloat(cb.dataset.valor);
+        if (!isNaN(valor)) total += valor;
+      });
+
+      const mensagem = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}`;
+      const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
+      window.open(link, "_blank");
+    });
+  }
+
+  // ✅ Botões do modal Pix
+  const abrirPix = document.getElementById("abrirPix");
+  const fecharPix = document.getElementById("fecharModalPix");
+  const modalPix = document.getElementById("modalPix");
+
+  if (abrirPix && fecharPix && modalPix) {
+    abrirPix.addEventListener("click", () => modalPix.style.display = "flex");
+    fecharPix.addEventListener("click", () => modalPix.style.display = "none");
+    modalPix.addEventListener("click", (e) => {
+      if (e.target.id === "modalPix") modalPix.style.display = "none";
+    });
+  }
+
+  // ✅ Pegando o CPF da URL
+  const params = new URLSearchParams(window.location.search);
+  let cpf = params.get("token");
+  if (cpf && /^[A-Za-z0-9+/=]+$/.test(cpf) && cpf.length > 11) {
+    try {
+      cpf = atob(cpf);
+    } catch (e) { }
+  }
+
+  if (cpf && /^\d{11}$/.test(cpf)) {
+    buscarParcelas(cpf);
+  }
 });
