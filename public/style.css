@@ -219,11 +219,7 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   margin-top: 14px;
   width: 100%;
 }
-.chave-label {
-  flex: 0 0 85px;
-  font-weight: 600;
-  color: #1976d2;
-}
+
 .pix-opcao button {
   background: #1976d2;
   color: #fff;
@@ -283,15 +279,6 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   flex: 0 0 85px;
   font-weight: 600;
   color: #1976d2;
-}
-.chave-codigo {
-  font-size: 0.97em;
-  padding: 2px 4px;
-  font-family: 'Segoe UI Mono', monospace;
-  background: #f5f7fa;
-  border-radius: 5px;
-  margin-right: 8px;
-  color: #333;
 }
 .pix-opcao button {
   background: #1976d2;
