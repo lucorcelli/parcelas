@@ -222,11 +222,11 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   color: #1976d2;
 }
 .chave-codigo {
-  font-size: 1.02em;
+  font-size: 0.97em;
+  padding: 2px 4px;
   font-family: 'Segoe UI Mono', monospace;
   background: #f5f7fa;
   border-radius: 5px;
-  padding: 3px 8px;
   margin-right: 8px;
   color: #333;
 }
@@ -235,9 +235,9 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   color: #fff;
   border: none;
   border-radius: 5px;
-  padding: 4px 13px;
+  padding: 3px 7px;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 0.95em;
   font-weight: 600;
   transition: background 0.18s;
 }
