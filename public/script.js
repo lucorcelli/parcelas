@@ -263,7 +263,6 @@ function mostrarToast(msg) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  // ✅ Botão Selecionar Todos
   const btnSelecionarTodos = document.getElementById("selecionarTodos");
   if (btnSelecionarTodos) {
     btnSelecionarTodos.addEventListener("click", () => {
@@ -273,6 +272,7 @@ window.addEventListener("DOMContentLoaded", () => {
       atualizarSelecionado();
     });
   }
+
 
   // ✅ Botão Voltar WhatsApp
   const btnVoltar = document.getElementById("voltarWhatsapp");
