@@ -244,3 +244,55 @@ tr.vencida {
     width: 120px;
   }
 }
+/* Redes Sociais - Grupo Corcelli */
+.redes-sociais-cx {
+  margin: 44px auto 0 auto;
+  max-width: 420px;
+  background: rgba(0,0,0,0.07);
+  border-radius: 14px;
+  padding: 24px 0 14px 0;
+  text-align: center;
+}
+.redes-sociais-titulo {
+  color: #1976d2;
+  font-size: 1.15em;
+  font-weight: bold;
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+.redes-sociais-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px 22px;
+}
+.redes-sociais-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #1976d2;
+  font-weight: 500;
+  font-size: 13px;
+  transition: transform .18s, opacity .18s;
+}
+.redes-sociais-link:hover {
+  transform: scale(1.08) translateY(-2px);
+  opacity: .88;
+}
+.redes-sociais-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #fff;
+  margin-bottom: 3px;
+  padding: 5px;
+  box-shadow: 0 1px 5px #0001;
+  border: 1.5px solid #e3edfa;
+}
+@media (max-width: 600px) {
+  .redes-sociais-cx { padding: 19px 0 10px 0; }
+  .redes-sociais-grid { gap: 18px 10px; }
+  .redes-sociais-img { width: 38px; height: 38px; padding: 3px; }
+}
