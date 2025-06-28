@@ -245,3 +245,69 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   background: #1256a2;
 }
 }
+/* MODAL PIX - Centralizado em TODAS as telas */
+.modal-pix {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.28);
+
+  /* Centraliza vertical e horizontal */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-pix-content {
+  background: #fff;
+  padding: 28px 22px 18px 22px;
+  border-radius: 11px;
+  max-width: 340px;
+  margin: auto;
+  position: relative;
+  box-shadow: 0 8px 32px #1976d244, 0 1.5px 6px #0002;
+  text-align: left;
+}
+.pix-opcao {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+}
+.chave-label {
+  flex: 0 0 85px;
+  font-weight: 600;
+  color: #1976d2;
+}
+.chave-codigo {
+  font-size: 0.97em;
+  padding: 2px 4px;
+  font-family: 'Segoe UI Mono', monospace;
+  background: #f5f7fa;
+  border-radius: 5px;
+  margin-right: 8px;
+  color: #333;
+}
+.pix-opcao button {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 3px 7px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 600;
+  transition: background 0.18s;
+}
+.pix-opcao button:hover {
+  background: #1256a2;
+}
+.fechar-modal-pix {
+  position: absolute;
+  top: 8px; right: 16px;
+  font-size: 2em;
+  color: #1976d2;
+  cursor: pointer;
+  z-index: 2;
+}
