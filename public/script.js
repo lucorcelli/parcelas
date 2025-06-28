@@ -43,9 +43,10 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
 
 function abreviarNome(nome) {
   if (!nome) return "";
-  return nome.split(" ").map(p => p[0] + ".").join(" ");
+  const partes = nome.trim().split(/\s+/);
+  if (partes.length === 1) return partes[0];
+  return `${partes[0]} ${partes[partes.length - 1][0]}.`;
 }
-
 function mascararCpfFinal(cpf) {
   if (!cpf) return "";
   const numeros = cpf.replace(/\D/g, "").slice(-8);
