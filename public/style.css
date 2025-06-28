@@ -214,7 +214,7 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
 .pix-opcao {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* força tudo para a direita */
+  justify-content: center; /* força tudo para a direita */
   gap: 7px;
   margin-top: 14px;
   width: 100%;
