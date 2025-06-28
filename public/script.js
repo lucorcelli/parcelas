@@ -230,6 +230,7 @@ document.getElementById("modalPix").addEventListener("click", function(e) {
 
 // Função copiar chave Pix (global para funcionar no onclick do HTML)
 window.copiarChave = function(id) {
+ console.log("Copiando chave:", id);
   const chave = document.getElementById(id).innerText;
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(chave)
