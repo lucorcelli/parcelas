@@ -222,15 +222,6 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   font-weight: 600;
   color: #1976d2;
 }
-.chave-codigo {
-  font-size: 10px !important;-
-  padding: 2px 4px;
-  font-family: 'Segoe UI Mono', monospace;
-  background: #f5f7fa;
-  border-radius: 5px;
-  margin-right: 8px;
-  color: #333;
-}
 .pix-opcao button {
   background: #1976d2;
   color: #fff;
@@ -244,8 +235,7 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
 }
 .pix-opcao button:hover {
   background: #1256a2;
-}
-}
+}}
 /* MODAL PIX - Centralizado em TODAS as telas */
 .modal-pix {
   display: none;
@@ -254,6 +244,16 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   left: 0; top: 0;
   width: 100vw; height: 100vh;
   background: rgba(0,0,0,0.28);
+
+  .chave-codigo {
+  font-size: 12px !important;-
+  padding: 2px 4px;
+  font-family: 'Segoe UI Mono', monospace;
+  background: #f5f7fa;
+  border-radius: 5px;
+  margin-right: 8px;
+  color: #333;
+}
 
   /* Centraliza vertical e horizontal */
   display: flex;
