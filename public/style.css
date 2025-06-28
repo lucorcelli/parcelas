@@ -173,6 +173,7 @@ tr.vencida {
   color: #1976d2;
   text-align: right;
   margin-right: 8px;
+  white-space: nowrap;
 }
 .chave-codigo {
   display: inline-block;
