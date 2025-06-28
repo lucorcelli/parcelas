@@ -20,7 +20,6 @@ function calcularJurosDiario(dias) {
 
 function mascararCpf(cpf) {
   if (!cpf) return '';
-  // Mascara tudo, exceto os 3 últimos dígitos
   return cpf.replace(/^(\d{3})\d+(\d{2})$/, '$1***$2');
 }
 
@@ -70,10 +69,8 @@ async function buscarParcelas(cpf) {
 
     const data = await response.json();
 
-    // Garante que data.itens é array
     const itens = Array.isArray(data.itens) ? data.itens : [];
 
-    // Busca nome/CPF, mesmo sem parcelas
     const nomeCompleto = itens[0]?.cliente?.identificacao?.nome || "";
     const nomeAbreviado = abreviarNome(nomeCompleto);
     const cpfParcial = mascararCpfFinal(cpf);
@@ -82,7 +79,6 @@ async function buscarParcelas(cpf) {
     let htmlString = "";
     const todasParcelas = [];
 
-    // Junta todas as parcelas em aberto de todos os contratos
     itens.forEach(item => {
       const contrato = item.contrato;
       const abertas = (item.parcelas || []).filter(p => {
@@ -94,7 +90,6 @@ async function buscarParcelas(cpf) {
       });
     });
 
-    // Se não há NENHUMA parcela em aberto (mas pode ter contratos)
     if (todasParcelas.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -103,7 +98,6 @@ async function buscarParcelas(cpf) {
           </td>
         </tr>
       `;
-      // Mostra nome e CPF mesmo para adimplente
       document.getElementById("dadosCliente").innerHTML = nomeCompleto ? `
         <div style="
           background-color: #f5f5f5;
@@ -123,10 +117,8 @@ async function buscarParcelas(cpf) {
       return;
     }
 
-    // Mostra as parcelas normalmente
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
-    // Prepara as parcelas com os cálculos de atraso e valor corrigido
     const hoje = new Date();
     const parcelasComCalculo = todasParcelas.map(p => {
       const venc = new Date(p.datavencimento);
@@ -136,7 +128,6 @@ async function buscarParcelas(cpf) {
       return { ...p, corrigido, atraso, atrasada };
     });
 
-    // Verifica se existe alguma vencida
     const existeVencida = parcelasComCalculo.some(p => p.atrasada);
 
     parcelasComCalculo.forEach((p, idx) => {
@@ -159,7 +150,7 @@ async function buscarParcelas(cpf) {
           <td>${formatarData(p.datavencimento)}</td>
           <td>R$ ${p.valorvencimento.toFixed(2).replace(".", ",")}</td>
           <td>R$ ${p.corrigido.toFixed(2).replace(".", ",")}</td>
-          <td>${p.atrasada ? `${p.atrazo} dia(s)` : "-"}</td>
+          <td>${p.atrasada ? `${p.atraso} dia(s)` : "-"}</td>
         </tr>
       `;
     });
@@ -226,12 +217,55 @@ document.getElementById("voltarWhatsapp").addEventListener("click", () => {
   window.open(link, "_blank");
 });
 
+// Modal Pix
+document.getElementById("abrirPix").addEventListener("click", function() {
+  document.getElementById("modalPix").style.display = "flex";
+});
+document.getElementById("fecharModalPix").addEventListener("click", function() {
+  document.getElementById("modalPix").style.display = "none";
+});
+document.getElementById("modalPix").addEventListener("click", function(e) {
+  if (e.target.id === "modalPix") document.getElementById("modalPix").style.display = "none";
+});
+
+// Função copiar chave Pix (global para funcionar no onclick do HTML)
+window.copiarChave = function(id) {
+  const chave = document.getElementById(id).innerText;
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(chave)
+      .then(() => mostrarToast("Chave Pix copiada!"))
+      .catch(() => mostrarToast("Não foi possível copiar. Tente copiar manualmente."));
+  } else {
+    mostrarToast("Não foi possível copiar. Tente copiar manualmente.");
+  }
+}
+
+// Toast visual (mensagem temporária na tela)
+function mostrarToast(msg) {
+  let toast = document.getElementById("toastPix");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toastPix";
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 22px; left: 50%; transform: translateX(-50%);
+      background: #1976d2; color: #fff; padding: 14px 32px;
+      border-radius: 24px; font-size: 1.07em; z-index: 2000;
+      box-shadow: 0 2px 18px #0002; opacity:0; pointer-events:none;
+      transition: opacity .2s;
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = "1";
+  setTimeout(() => { toast.style.opacity = "0"; }, 2100);
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token");
   let cpf = token;
   if (token && /^[A-Za-z0-9+/=]+$/.test(token) && token.length > 11) {
-    // Provavelmente está em base64, decodifica
     try {
       cpf = atob(token);
     } catch (e) {
@@ -239,31 +273,4 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
   if (cpf && /^\d{11}$/.test(cpf)) buscarParcelas(cpf);
-  // Abrir modal Pix
-document.getElementById("abrirPix").addEventListener("click", () => {
-  document.getElementById("modalPix").style.display = "flex";
-});
-// Fechar modal Pix
-document.getElementById("fecharModalPix").addEventListener("click", () => {
-  document.getElementById("modalPix").style.display = "none";
-});
-// Fechar ao clicar fora do conteúdo
-document.getElementById("modalPix").addEventListener("click", (e) => {
-  if (e.target.id === "modalPix") document.getElementById("modalPix").style.display = "none";
-});
-// Função copiar chave Pix
-function copiarChave(id) {
-  const chave = document.getElementById(id).innerText;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(chave)
-      .then(() => {
-        alert("Chave Pix copiada!");
-      })
-      .catch(() => {
-        alert("Não foi possível copiar. Tente copiar manualmente.");
-      });
-  } else {
-    alert("Não foi possível copiar. Tente copiar manualmente.");
-  }
-}
 });
