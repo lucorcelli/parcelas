@@ -266,5 +266,4 @@ function copiarChave(id) {
     alert("Não foi possível copiar. Tente copiar manualmente.");
   }
 }
-}
 });
