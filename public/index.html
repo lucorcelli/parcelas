@@ -9,64 +9,26 @@
 </head>
 <body>
   <header>
-    <img src="logo1.png" alt="Logo da Empresa" style="display:block;margin:0 auto 8px;max-width:80px;border-radius:14px;box-shadow:0 2px 12px #0002;">
+    <img src="logo1.png" alt="Logo da Empresa"
+      style="display:block;margin:0 auto 8px;max-width:80px;border-radius:14px;box-shadow:0 2px 12px #0002;">
     <h1>Parcelas em Aberto</h1>
   </header>
 
   <div id="dadosCliente" style="margin-top: 20px;"></div>
   
-  <div class="botoes-acao botoes-lado-a-lado">
-  <button id="selecionarTodos">
-    <span class="botao-icone"></span>
-    Selecionar Tudo
-  </button>
-  <button id="voltarWhatsapp">
-    <span class="botao-icone"></span>
-    Voltar WhatsApp
-  </button>
-  <button id="abrirPix">
-    <span class="botao-icone"></span>
-    Chave Pix
-  </button>
-</div>
+  <div class="botoes-acao botoes-lado-a-lado" style="margin-bottom: 18px;">
+    <button id="selecionarTodos">
+      <span class="botao-icone"></span>
+      Selecionar Tudo
+    </button>
+    <button id="voltarWhatsapp">
+      <span class="botao-icone"></span>
+      Voltar WhatsApp
+    </button>
+    <button id="abrirPix">
+      <span class="botao-icone"></span>
+      Chave Pix
+    </button>
+  </div>
 
-  <div class="table-container">
-    <table id="tabelaParcelas">
-      <thead>
-        <tr>
-          <th>Selecionar</th>
-          <th>Parcela</th>
-          <th>Vencimento</th>
-          <th>Valor Original</th>
-          <th>Valor Corrigido</th>
-          <th>Dias Atraso</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-  <script src="script.js"></script>
-  <div id="modalPix" class="modal-pix" style="display:none;">
-  <div class="modal-pix-content">
-    <span id="fecharModalPix" class="fechar-modal-pix">&times;</span>
-    <h2>Chaves Pix para pagamento</h2>
-    <div class="pix-opcao">
-      <span class="chave-label">Chave 1 (Aleatoria):</span>
-      <span class="chave-codigo" id="chavePix1">4b485669-915b-4162-87a7-8230a391722b</span>
-      <button onclick="copiarChave('chavePix1')">Copiar</button>
-    </div>
-    <div class="pix-opcao">
-      <span class="chave-label">Chave 2 (E-mail):</span>
-      <span class="chave-codigo" id="chavePix2">lcorcelli@hotmail.com</span>
-      <button onclick="copiarChave('chavePix2')">Copiar</button>
-    </div>
-  </div>
-</div>
-</body>
-  <footer>
-  <!-- Outros conteúdos do rodapé -->
-  <a href="https://www.grupocorcelli.com.br" target="_blank">
-    <button>Visite nosso site</button>
-  </a>
-</footer>
-</html>
+  <div
