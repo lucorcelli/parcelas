@@ -222,7 +222,7 @@ th:nth-child(6), td:nth-child(6) { width: 70px; }
   color: #1976d2;
 }
 .chave-codigo {
-  font-size: 14px;
+  font-size: 12px;
   padding: 2px 4px;
   font-family: 'Segoe UI Mono', monospace;
   background: #f5f7fa;
