@@ -1,6 +1,46 @@
 export default async function handler(req, res) {
-  const { cpf } = req.query;
+ 
+  let tokenCache = {
+    token: null,
+    geradoEm: null
+  };
+  async function obterToken() {
+  const agora = Date.now();
+  tokenCache.geradoEm = null; // força nova autenticação
 
+  // Se já temos token e foi gerado há menos de 12 horas, reutiliza
+  if (
+    tokenCache.token &&
+    tokenCache.geradoEm &&
+    agora - tokenCache.geradoEm < 12 * 60 * 60 * 1000 // 12 horas em ms
+  ) {
+    return tokenCache.token;
+  }
+
+  // Caso contrário, gera novo token
+  const authResponse = await fetch("https://integracaodatasystem.useserver.com.br/api/v1/autenticar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      cnpj: process.env.CREDIARIO_CNPJ,
+      hash: process.env.CREDIARIO_HASH
+
+    })
+  });
+
+  if (!authResponse.ok) {
+    throw new Error(`Erro ao autenticar: ${authResponse.status}`);
+  }
+
+  const json = await authResponse.json();
+
+  // Salva no cache
+  tokenCache.token = json.token;
+  tokenCache.geradoEm = agora;
+
+  return json.token;
+}
+  const { cpf } = req.query;
   if (!cpf) {
     return res.status(400).json({ erro: "CPF obrigatório" });
   }
@@ -11,7 +51,7 @@ export default async function handler(req, res) {
     const response = await fetch(url, {
       headers: {
         accept: "application/json",
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJkYzA0MjFkOTc1YWJiNDliNGY3MTIxNzc2ZTc2MmY3ZDVkZmY5MTRlIl0sImp0aSI6IjE5ZTFkMzBmZDVlYjRjZjU4MTVkNmM0NDAxYzEzYzA4IiwibmFtZWlkIjoiZGMwNDIxZDk3NWFiYjQ5YjRmNzEyMTc3NmU3NjJmN2Q1ZGZmOTE0ZSIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUxMjQ1NjMwLCJleHAiOjE3NTEzMzIwMzAsImlhdCI6MTc1MTI0NTYzMH0.5sv8UHxVd8SBISjhcukTsWsFicprs2FG6V-B6vd32Og"
+        Authorization: 'Bearer ${token}'
       }
     });
 
