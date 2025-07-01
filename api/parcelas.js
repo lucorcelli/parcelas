@@ -48,12 +48,15 @@ export default async function handler(req, res) {
   const url = `https://integracaodatasystem.useserver.com.br/api/v1/personalizado-1/meucrediario/vendas?cpf=${cpf}&dataInicio=2022-01-01&horaIni=00%3A00&dataFim=2035-06-01&horaFim=00%3A00&itensPorPagina=18&pagina=1&baixado=2`;
 
   try {
+    const token = await obterToken(); // ⬅️ essa é a linha que estava faltando
+    console.log("🔑 Token em uso:", token.slice(0, 20) + "...");
+
     const response = await fetch(url, {
-      headers: {
-        accept: "application/json",
-        Authorization: 'Bearer ${token}'
-      }
-    });
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${token}` // agora sim, token real
+    }
+  });
 
     if (!response.ok) {
       return res.status(response.status).json({ erro: "Erro ao acessar API externa", status: response.status });
