@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   };
   async function obterToken() {
   const agora = Date.now();
-  tokenCache.geradoEm = null; // força nova autenticação
-
+  //tokenCache.geradoEm = null; // força nova autenticação
+   
   // Se já temos token e foi gerado há menos de 12 horas, reutiliza
   if (
     tokenCache.token &&
