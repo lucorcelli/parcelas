@@ -1,5 +1,5 @@
-function abrirJanelaProdutoCompleta(codigoVenda) {
-  const url = `https://integracaodatasystem.useserver.com.br/api/v1/vendas/loja/5/codigo/${codigoVenda}`;
+function abrirJanelaProdutoCompleta(loja, codigoVenda) {
+  const url = `https://integracaodatasystem.useserver.com.br/api/v1/vendas/loja/${loja}/codigo/${codigoVenda}`;
   const popup = window.open("", "_blank", "width=720,height=600,left=100,top=100");
 
   popup.document.write(`
