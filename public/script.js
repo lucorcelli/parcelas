@@ -62,36 +62,61 @@ async function buscarParcelas(cpf) {
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
 
-  const url = `/api/parcelas?cpf=${cpf}`;
-
   try {
-    const response = await fetch(url);
-    const response = await fetch(url);
+    const response = await fetch(`/api/parcelas?cpf=${cpf}`);
+    if (!response.ok) throw new Error("Erro ao acessar a API.");
 
-if (response.status === 204) {
-  tbody.innerHTML = `
-    <tr>
-      <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
-        Nenhuma parcela em aberto para este cliente. 🎉
-      </td>
-    </tr>
-  `;
-  document.getElementById("dadosCliente").innerHTML = `
-    <div style="
-      background-color: #f5f5f5;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 12px 16px;
-      font-family: Arial, sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-      color: #333;
-      margin-bottom: 20px;">
-      <div><strong>Cliente:</strong> - — <strong>CPF final:</strong> ${mascararCpfFinal(cpf)}</div>
-      <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">0,00</span></div>
-    </div>
-  `;
-  atualizarSelecionado();
+    const data = await response.json();
+    const itens = Array.isArray(data.itens) ? data.itens : [];
+
+    const nomeCompleto = itens[0]?.cliente?.identificacao?.nome || "";
+    const nomeAbreviado = abreviarNome(nomeCompleto);
+    const cpfParcial = mascararCpfFinal(cpf);
+
+    let todasParcelas = [];
+
+    itens.forEach(item => {
+      const contrato = item.contrato;
+      const abertas = (item.parcelas || []).filter(p => {
+        return p.capitalaberto > 0 && p.valorvencimento > 0;
+      });
+      abertas.forEach(p => todasParcelas.push({ contrato, ...p }));
+    });
+
+    if (todasParcelas.length === 0) {
+      // Exibe mensagem elegante no lugar da tabela
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
+            Nenhuma parcela em aberto para este cliente. 🎉
+          </td>
+        </tr>
+      `;
+      document.getElementById("dadosCliente").innerHTML = `
+        <div style="
+          background-color: #f5f5f5;
+          border: 1px solid #ccc;
+          border-radius: 6px;
+          padding: 12px 16px;
+          font-family: Arial, sans-serif;
+          font-size: 15px;
+          line-height: 1.6;
+          color: #333;
+          margin-bottom: 20px;">
+          <div><strong>Cliente:</strong> ${nomeAbreviado || "-"} — 
+          <strong>CPF final:</strong> ${cpfParcial}</div>
+          <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — 
+          <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">0,00</span></div>
+        </div>
+      `;
+      atualizarSelecionado();
+      return;
+    }
+  } catch (err) {
+    console.error("Erro na consulta de parcelas:", err);
+    alert("Erro ao consultar os dados. Tente novamente mais tarde.");
+  }
+}
   return; // evita seguir com parsing
 }
 
