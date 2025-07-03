@@ -196,7 +196,7 @@ async function buscarParcelas(cpf) {
     document.querySelectorAll(".selecionar-parcela").forEach(cb => {
       cb.addEventListener("change", atualizarSelecionado);
     });
-
+  document.getElementById("loaderParcelas").style.display = "block"; // mostra loader
   } catch (err) {
     console.error("Erro na consulta de parcelas:", err);
     alert("Erro ao consultar os dados. Tente novamente mais tarde.");
