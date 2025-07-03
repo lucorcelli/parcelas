@@ -63,7 +63,10 @@ export default async function handler(req, res) {
 
     if (response.status === 204) {
       return res.status(204).json({
-        const data = await response.json();
+        sucesso: true,
+    mensagem: "Nenhuma parcela encontrada para o CPF informado.",
+    parcelas: []
+
         if (data.parcelas?.length === 0 || Array.isArray(data.parcelas) && data.parcelas.length === 0) {
           tbody.innerHTML = `
         <tr>
