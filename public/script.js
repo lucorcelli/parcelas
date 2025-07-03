@@ -17,7 +17,28 @@ function calcularJurosDiario(dias) {
   }
   return 0;
 }
+function renderizarParcelas(parcelas) {
+  const htmlBuilder = [];
 
+  parcelas.forEach(p => {
+    htmlBuilder.push(`
+      <tr>
+        <td>${p.contrato}-${p.parcela}</td>
+        <td>${formatarData(p.vencimento)}</td>
+        <td>R$ ${p.valorOriginal.toFixed(2).replace(".", ",")}</td>
+        <td>R$ ${p.valorCorrigido.toFixed(2).replace(".", ",")}</td>
+        <td>${p.atraso || "-"}</td>
+        <td>
+          <button onclick="abrirJanelaProdutoCompleta('${p.contrato}')" style="background:#1976d2; color:#fff; padding:5px 10px; border-radius:5px; border:none; cursor:pointer;">
+            Ver Produto
+          </button>
+        </td>
+      </tr>
+    `);
+  });
+
+  document.querySelector("#tabelaParcelas tbody").innerHTML = htmlBuilder.join("");
+}
 function mascararCpfFinal(cpf) {
   if (!cpf) return "";
   const numeros = cpf.replace(/\D/g, "").slice(-8);
