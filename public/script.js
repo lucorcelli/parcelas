@@ -54,7 +54,7 @@ async function buscarParcelas(cpf) {
     alert("CPF não informado na URL.");
     return;
   }
-
+  document.getElementById("loaderParcelas").style.display = "block"; // mostra loader
   const tbody = document.querySelector("#tabelaParcelas tbody");
   tbody.innerHTML = "";
 
@@ -196,7 +196,7 @@ async function buscarParcelas(cpf) {
     document.querySelectorAll(".selecionar-parcela").forEach(cb => {
       cb.addEventListener("change", atualizarSelecionado);
     });
-  document.getElementById("loaderParcelas").style.display = "block"; // mostra loader
+  document.getElementById("loaderParcelas").style.display = "none"; // esconde loader
   } catch (err) {
     console.error("Erro na consulta de parcelas:", err);
     alert("Erro ao consultar os dados. Tente novamente mais tarde.");
