@@ -48,7 +48,7 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   const comJuros = comMulta * (1 + jurosDia * dias);
   return { corrigido: parseFloat(comJuros.toFixed(6)),
   atraso: dias    
-};
+}
 
 async function buscarParcelas(cpf) {
   if (!cpf) {
