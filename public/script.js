@@ -64,10 +64,27 @@ async function buscarParcelas(cpf) {
 
     const texto = await response.text();
     if (!texto) {
-      throw new Error("Resposta vazia da API");
-    }
-    const data = JSON.parse(texto);
+        // Se quiser ser gentil com o cliente:
+        tbody.innerHTML = `
+    <tr>
+        <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
+            Nenhuma parcela em aberto para este cliente. 🎉
+        </td>
+    </tr>
+  `;
 
+  document.getElementById("dadosCliente").innerHTML = `
+    <div style="background-color:#f5f5f5; border:1px solid #ccc; border-radius:6px; padding:12px 16px;">
+      <div><strong>Cliente:</strong> - — <strong>CPF final:</strong> ${mascararCpfFinal(cpf)}</div>
+      <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — 
+      <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color:#007bff;">0,00</span></div>
+    </div>
+    `;
+    atualizarSelecionado();
+      return;
+    }
+
+    const data = JSON.parse(texto);
     const itens = Array.isArray(data.itens) ? data.itens : [];
 
     const nomeCompleto = itens[0]?.cliente?.identificacao?.nome || "";
