@@ -62,7 +62,12 @@ async function buscarParcelas(cpf) {
     const response = await fetch(`/api/parcelas?cpf=${cpf}`);
     if (!response.ok) throw new Error("Erro ao acessar a API.");
 
-    const data = await response.json();
+    const texto = await response.text();
+    if (!texto) {
+      throw new Error("Resposta vazia da API");
+    }
+    const data = JSON.parse(texto);
+
     const itens = Array.isArray(data.itens) ? data.itens : [];
 
     const nomeCompleto = itens[0]?.cliente?.identificacao?.nome || "";
