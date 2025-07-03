@@ -57,7 +57,7 @@ async function buscarParcelas(cpf) {
 
   const tbody = document.querySelector("#tabelaParcelas tbody");
   const loader = document.getElementById("loaderParcelas");
-  if (loader) loader.style.display = "block"; // Exibe loader
+  if (loader) loader.style.display = "block";
   tbody.innerHTML = "";
 
   try {
@@ -65,7 +65,26 @@ async function buscarParcelas(cpf) {
     if (!response.ok) throw new Error("Erro ao acessar a API.");
 
     const texto = await response.text();
-    if (!texto) throw new Error("Resposta vazia da API");
+    if (!texto || texto.trim() === "") {
+      // ⚠️ Resposta da API está vazia
+      document.getElementById("dadosCliente").innerHTML = `
+        <div style="background-color:#f5f5f5; border:1px solid #ccc; border-radius:6px; padding:12px 16px;">
+          <div><strong>Cliente:</strong> - — <strong>CPF final:</strong> ${mascararCpfFinal(cpf)}</div>
+          <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — 
+          <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color:#007bff;">0,00</span></div>
+        </div>
+      `;
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
+            Nenhuma parcela em aberto para este cliente. 🎉
+          </td>
+        </tr>
+      `;
+      atualizarSelecionado();
+      if (loader) loader.style.display = "none";
+      return;
+    }
 
     const data = JSON.parse(texto);
     const itens = Array.isArray(data.itens) ? data.itens : [];
@@ -170,8 +189,7 @@ async function buscarParcelas(cpf) {
     alert("Erro ao consultar os dados. Tente novamente mais tarde.");
   }
 
-  if (loader) loader.style.display = "none"; // esconde loader no final
-
+  if (loader) loader.style.display = "none";
 }
 
 
