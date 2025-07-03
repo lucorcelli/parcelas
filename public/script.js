@@ -49,7 +49,7 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   return { corrigido: comJuros, atraso: dias };
 }
 
-aasync function buscarParcelas(cpf) {
+async function buscarParcelas(cpf) {
   if (!cpf) {
     alert("CPF não informado na URL.");
     return;
