@@ -18,9 +18,17 @@ function calcularJurosDiario(dias) {
   return 0;
 }
 
-function mascararCpf(cpf) {
-  if (!cpf) return '';
-  return cpf.replace(/^(\d{3})\d+(\d{2})$/, '$1***$2');
+function mascararCpfFinal(cpf) {
+  if (!cpf) return "";
+  const numeros = cpf.replace(/\D/g, "").slice(-8);
+  return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
+}
+
+function abreviarNome(nome) {
+  if (!nome) return "";
+  const partes = nome.trim().split(/\s+/);
+  if (partes.length === 1) return partes[0];
+  return `${partes[0]} ${partes[partes.length - 1][0]}.`;
 }
 
 function formatarData(dataStr) {
@@ -39,18 +47,6 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   const comMulta = valorOriginal * 1.02;
   const comJuros = comMulta * (1 + jurosDia * dias);
   return { corrigido: comJuros, atraso: dias };
-}
-
-function abreviarNome(nome) {
-  if (!nome) return "";
-  const partes = nome.trim().split(/\s+/);
-  if (partes.length === 1) return partes[0];
-  return `${partes[0]} ${partes[partes.length - 1][0]}.`;
-}
-function mascararCpfFinal(cpf) {
-  if (!cpf) return "";
-  const numeros = cpf.replace(/\D/g, "").slice(-8);
-  return numeros.replace(/^(\d{3})(\d{3})(\d{2})$/, "$1.$2-$3");
 }
 
 async function buscarParcelas(cpf) {
@@ -94,6 +90,7 @@ async function buscarParcelas(cpf) {
           </td>
         </tr>
       `;
+
       document.getElementById("dadosCliente").innerHTML = `
         <div style="
           background-color: #f5f5f5;
@@ -115,7 +112,6 @@ async function buscarParcelas(cpf) {
       return;
     }
 
-    // 🔒 Mantém sua lógica original
     todasParcelas.sort((a, b) => new Date(a.datavencimento) - new Date(b.datavencimento));
 
     const hoje = new Date();
@@ -134,12 +130,8 @@ async function buscarParcelas(cpf) {
 
     parcelasComCalculo.forEach((p, idx) => {
       let checked = "";
-
-      if (existeVencida) {
-        if (p.atrasada) checked = "checked";
-      } else {
-        if (idx === 0) checked = "checked";
-      }
+      if (existeVencida && p.atrasada) checked = "checked";
+      else if (!existeVencida && idx === 0) checked = "checked";
 
       totalGeral += p.corrigido;
 
@@ -189,35 +181,6 @@ async function buscarParcelas(cpf) {
   }
 }
 
-
-    document.getElementById("dadosCliente").innerHTML = `
-      <div style="
-        background-color: #f5f5f5;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 12px 16px;
-        font-family: Arial, sans-serif;
-        font-size: 15px;
-        line-height: 1.6;
-        color: #333;
-        margin-bottom: 20px;">
-        <div><strong>Cliente:</strong> ${nomeAbreviado} — <strong>CPF final:</strong> ${cpfParcial}</div>
-        <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} —
-        <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">${totalGeral.toFixed(2).replace(".", ",")}</span></div>
-      </div>
-    `;
-
-    atualizarSelecionado();
-
-    document.querySelectorAll(".selecionar-parcela").forEach(cb => {
-      cb.addEventListener("change", atualizarSelecionado);
-    });
-
-  } catch (err) {
-    console.error("Erro:", err);
-    alert("Erro ao consultar os dados. Tente novamente mais tarde.");
-  }
-}
 
 function atualizarSelecionado() {
   let total = 0;
