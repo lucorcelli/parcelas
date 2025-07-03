@@ -24,6 +24,12 @@ export default async function handler(req, res) {
       })
     });
 
+    if (authResponse.status === 401) {
+      return res.status(401).json({
+        erro: "Usuário não autenticado. Verifique suas credenciais."
+      });
+    }
+
     if (!authResponse.ok) {
       throw new Error(`Erro ao autenticar: ${authResponse.status}`);
     }
@@ -83,7 +89,9 @@ export default async function handler(req, res) {
       dados = JSON.parse(texto);
     } catch (parseError) {
       console.error("Erro ao fazer parsing do JSON:", parseError);
-      return res.status(500).json({ erro: "Resposta inválida da API externa" });
+      return res.status(500).json({
+        erro: "Resposta inválida da API externa"
+      });
     }
 
     res.status(200).json(dados);
