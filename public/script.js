@@ -49,13 +49,15 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   return { corrigido: comJuros, atraso: dias };
 }
 
-async function buscarParcelas(cpf) {
+aasync function buscarParcelas(cpf) {
   if (!cpf) {
     alert("CPF não informado na URL.");
     return;
   }
-  document.getElementById("loaderParcelas").style.display = "block"; // mostra loader
+
   const tbody = document.querySelector("#tabelaParcelas tbody");
+  const loader = document.getElementById("loaderParcelas");
+  if (loader) loader.style.display = "block"; // Exibe loader
   tbody.innerHTML = "";
 
   try {
@@ -63,46 +65,26 @@ async function buscarParcelas(cpf) {
     if (!response.ok) throw new Error("Erro ao acessar a API.");
 
     const texto = await response.text();
-    if (!texto) {
-        // Se quiser ser gentil com o cliente:
-        tbody.innerHTML = `
-    <tr>
-        <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
-            Nenhuma parcela em aberto para este cliente. 🎉
-        </td>
-    </tr>
-  `;
-
-  document.getElementById("dadosCliente").innerHTML = `
-    <div style="background-color:#f5f5f5; border:1px solid #ccc; border-radius:6px; padding:12px 16px;">
-      <div><strong>Cliente:</strong> - — <strong>CPF final:</strong> ${mascararCpfFinal(cpf)}</div>
-      <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — 
-      <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color:#007bff;">0,00</span></div>
-    </div>
-    `;
-    atualizarSelecionado();
-      return;
-    }
+    if (!texto) throw new Error("Resposta vazia da API");
 
     const data = JSON.parse(texto);
     const itens = Array.isArray(data.itens) ? data.itens : [];
 
-    const nomeCompleto = itens[0]?.cliente?.identificacao?.nome || "";
+    const nomeCompleto = itens[0]?.cliente?.identificacao?.nome || "-";
     const nomeAbreviado = abreviarNome(nomeCompleto);
     const cpfParcial = mascararCpfFinal(cpf);
 
     let todasParcelas = [];
 
-    itens.forEach(item => {
+    for (const item of itens) {
       const contrato = item.contrato;
-      const abertas = (item.parcelas || []).filter(p => {
-        if (!p.datavencimento) return false;
-        return p.capitalaberto > 0 && p.valorvencimento > 0;
-      });
-      abertas.forEach(p => {
-        todasParcelas.push({ contrato, ...p });
-      });
-    });
+      const abertas = (item.parcelas || []).filter(p =>
+        p.datavencimento &&
+        p.capitalaberto > 0 &&
+        p.valorvencimento > 0
+      );
+      abertas.forEach(p => todasParcelas.push({ contrato, ...p }));
+    }
 
     if (todasParcelas.length === 0) {
       tbody.innerHTML = `
@@ -112,25 +94,16 @@ async function buscarParcelas(cpf) {
           </td>
         </tr>
       `;
-
       document.getElementById("dadosCliente").innerHTML = `
-        <div style="
-          background-color: #f5f5f5;
-          border: 1px solid #ccc;
-          border-radius: 6px;
-          padding: 12px 16px;
-          font-family: Arial, sans-serif;
-          font-size: 15px;
-          line-height: 1.6;
-          color: #333;
-          margin-bottom: 20px;">
+        <div style="background-color:#f5f5f5; border:1px solid #ccc; border-radius:6px; padding:12px 16px;">
           <div><strong>Cliente:</strong> ${nomeAbreviado} — 
           <strong>CPF final:</strong> ${cpfParcial}</div>
           <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — 
-          <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">0,00</span></div>
+          <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color:#007bff;">0,00</span></div>
         </div>
       `;
       atualizarSelecionado();
+      if (loader) loader.style.display = "none";
       return;
     }
 
@@ -141,26 +114,28 @@ async function buscarParcelas(cpf) {
       const venc = new Date(p.datavencimento);
       const valorOriginal = p.valorvencimento;
       const { corrigido, atraso } = calcularValorCorrigido(valorOriginal, p.datavencimento);
-      const atrasada = venc < hoje;
-      return { ...p, corrigido, atraso, atrasada };
+      return {
+        ...p,
+        corrigido,
+        atraso,
+        atrasada: venc < hoje
+      };
     });
 
     const existeVencida = parcelasComCalculo.some(p => p.atrasada);
 
     let totalGeral = 0;
-    let htmlString = "";
+    let htmlBuilder = [];
 
-    parcelasComCalculo.forEach((p, idx) => {
-      let checked = "";
-      if (existeVencida && p.atrasada) checked = "checked";
-      else if (!existeVencida && idx === 0) checked = "checked";
-
+    for (let i = 0; i < parcelasComCalculo.length; i++) {
+      const p = parcelasComCalculo[i];
+      const marcado = existeVencida ? p.atrasada : i === 0;
       totalGeral += p.corrigido;
 
-      htmlString += `
+      htmlBuilder.push(`
         <tr class="${p.atrasada ? "vencida" : ""}">
           <td>
-            <input type="checkbox" class="selecionar-parcela" data-valor="${p.corrigido}" ${checked} />
+            <input type="checkbox" class="selecionar-parcela" data-valor="${p.corrigido}" ${marcado ? "checked" : ""} />
           </td>
           <td>${p.contrato}-${p.parcela}</td>
           <td>${formatarData(p.datavencimento)}</td>
@@ -168,29 +143,35 @@ async function buscarParcelas(cpf) {
           <td>R$ ${p.corrigido.toFixed(2).replace(".", ",")}</td>
           <td>${p.atrasada ? `${p.atraso} dia(s)` : "-"}</td>
         </tr>
-      `;
-    });
+      `);
+    }
 
-    tbody.innerHTML = htmlString;
+    tbody.innerHTML = htmlBuilder.join("");
 
     document.getElementById("dadosCliente").innerHTML = `
-      <div style="
-        background-color: #f5f5f5;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 12px 16px;
-        font-family: Arial, sans-serif;
-        font-size: 15px;
-        line-height: 1.6;
-        color: #333;
-        margin-bottom: 20px;">
+      <div style="background-color:#f5f5f5; border:1px solid #ccc; border-radius:6px; padding:12px 16px;">
         <div><strong>Cliente:</strong> ${nomeAbreviado} — 
         <strong>CPF final:</strong> ${cpfParcial}</div>
         <div><strong>Total de Todas as Parcelas:</strong> R$ ${totalGeral.toFixed(2).replace(".", ",")} — 
-        <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">${totalGeral.toFixed(2).replace(".", ",")}</span></div>
+        <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color:#007bff;">${totalGeral.toFixed(2).replace(".", ",")}</span></div>
       </div>
     `;
 
+    atualizarSelecionado();
+
+    requestAnimationFrame(() => {
+      document.querySelectorAll(".selecionar-parcela").forEach(cb => {
+        cb.addEventListener("change", atualizarSelecionado);
+      });
+    });
+
+  } catch (err) {
+    console.error("Erro na consulta de parcelas:", err);
+    alert("Erro ao consultar os dados. Tente novamente mais tarde.");
+  }
+
+  if (loader) loader.style.display = "none"; // esconde loader no final
+}
     atualizarSelecionado();
 
     document.querySelectorAll(".selecionar-parcela").forEach(cb => {
