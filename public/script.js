@@ -100,7 +100,24 @@ if (!response.ok) {
 }
 
     const data = await response.json();
+    const data = await response.json();
 
+let todasParcelas = [];
+
+if (Array.isArray(data.itens)) {
+  data.itens.forEach(item => {
+    const contrato = item.contrato;
+    const abertas = (item.parcelas || []).filter(p => {
+      if (!p.datavencimento) return false;
+      return p.capitalaberto > 0 && p.valorvencimento > 0;
+    });
+    abertas.forEach(p => {
+      todasParcelas.push({ contrato, ...p });
+    });
+  });
+} else if (Array.isArray(data.parcelas)) {
+  todasParcelas = data.parcelas;
+}
     const itens = Array.isArray(data.itens) ? data.itens : [];
 
     const nomeCompleto = itens[0]?.cliente?.identificacao?.nome || "";
