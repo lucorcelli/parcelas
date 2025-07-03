@@ -64,35 +64,8 @@ export default async function handler(req, res) {
     if (response.status === 204) {
       return res.status(204).json({
         sucesso: true,
-    mensagem: "Nenhuma parcela encontrada para o CPF informado.",
-    parcelas: []
-
-        if (data.parcelas?.length === 0 || Array.isArray(data.parcelas) && data.parcelas.length === 0) {
-          tbody.innerHTML = `
-        <tr>
-          <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
-          ${data.mensagem || "Nenhuma parcela disponível para este CPF."} 🎉
-        </td>
-        </tr>
-      `;
-      document.getElementById("dadosCliente").innerHTML = `
-      <div style="
-        background-color: #f5f5f5;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 12px 16px;
-        font-family: Arial, sans-serif;
-        font-size: 15px;
-        line-height: 1.6;
-        color: #333;
-        margin-bottom: 20px;">
-        <div><strong>Cliente:</strong> - — <strong>CPF final:</strong> ${mascararCpfFinal(cpf)}</div>
-        <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">0,00</span></div>
-        </div>
-        `;
-        atualizarSelecionado();
-        return;
-        }
+        mensagem: "Nenhuma parcela encontrada para o CPF informado.",
+        parcelas: []
       });
     }
 
