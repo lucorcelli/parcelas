@@ -66,7 +66,38 @@ async function buscarParcelas(cpf) {
 
   try {
     const response = await fetch(url);
-    if (!response.ok) throw new Error(`Erro da API: ${response.status}`);
+    const response = await fetch(url);
+
+if (response.status === 204) {
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="7" style="text-align:center; color: #1976d2; font-weight: bold;">
+        Nenhuma parcela em aberto para este cliente. 🎉
+      </td>
+    </tr>
+  `;
+  document.getElementById("dadosCliente").innerHTML = `
+    <div style="
+      background-color: #f5f5f5;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 20px;">
+      <div><strong>Cliente:</strong> - — <strong>CPF final:</strong> ${mascararCpfFinal(cpf)}</div>
+      <div><strong>Total de Todas as Parcelas:</strong> R$ 0,00 — <strong>Selecionado:</strong> R$ <span id="resumoSelecionado" style="color: #007bff;">0,00</span></div>
+    </div>
+  `;
+  atualizarSelecionado();
+  return; // evita seguir com parsing
+}
+
+if (!response.ok) {
+  throw new Error(`Erro da API: ${response.status}`);
+}
 
     const data = await response.json();
 
