@@ -67,9 +67,10 @@ export default async function handler(req, res) {
     
     let response = await fetch(url, {
       headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${token}`
-      }
+      accept: "application/json",
+      // Authorization: `Bearer ${token}` // ⬅️ comenta essa para usar token fixo
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJmOWUwODY5YjNlZGEyZTViYzk3MWJiNmRiMWRjMjVlOTliNGQ4MWZmIl0sImp0aSI6IjdiNzkzNDU5OWEwMDRmMjJhNTg1NjU4MjIwODE4ZjQ4IiwibmFtZWlkIjoiZjllMDg2OWIzZWRhMmU1YmM5NzFiYjZkYjFkYzI1ZTk5YjRkODFmZiIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUxNjQ0OTU1LCJleHAiOjE3NTE3MzEzNTUsImlhdCI6MTc1MTY0NDk1NX0.Io7K_MYC2LWVkNuO_7jqmVdP_C0BPGUVb2DZluGm020` // ⬅️ descomenta esta para testar manualmente
+    }
     });
     
     // 🔄 Retry em caso de token recusado
