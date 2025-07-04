@@ -356,3 +356,9 @@ function adicionarEventoCheckboxes() {
     buscarParcelas(cpf);
   }
 });
+document.querySelector("#tabelaParcelas tbody").innerHTML += `
+  <tr>
+    <td></td><td></td><td></td><td></td><td></td><td></td>
+    <td><button onclick="alert('Botão funcionando')" style="background:#1976d2; color:#fff; padding:6px 10px;">Ver Produto</button></td>
+  </tr>
+`;
