@@ -172,25 +172,32 @@ async function buscarParcelas(cpf) {
     for (let i = 0; i < parcelasComCalculo.length; i++) {
       const p = parcelasComCalculo[i];
       const marcado = existeVencida ? p.atrasada : i === 0;
+      const partes = p.contrato.split("-");
+      const lojaExtraida = partes[0];       // "4"
+      const contratoExtraido = partes[1];   // "1000754273"
       totalGeral += p.corrigido;
+      const partes = p.contrato.split("-");
+      const loja = partes[0];
+      const contrato = partes[1];
+
       htmlBuilder.push(`
-      <tr class="${p.atrasada ? "vencida" : ""}">
-        <td>
-          <input type="checkbox" class="selecionar-parcela" data-valor="${p.corrigido}" ${marcado ? "checked" : ""} />
-        </td>
-        <td>${p.contrato}-${p.parcela}</td>
-        <td>${formatarData(p.datavencimento)}</td>
-        <td>R$ ${p.valorvencimento.toFixed(2).replace(".", ",")}</td>
-        <td>R$ ${p.corrigido.toFixed(2).replace(".", ",")}</td>
-        <td>${p.atrasada ? `${p.atraso} dia(s)` : "-"}</td>
-        <td>
-          <button onclick="abrirJanelaProdutoCompleta('${p.loja}', '${p.contrato}')" 
+        <tr class="${p.atrasada ? "vencida" : ""}">
+          <td>
+            <input type="checkbox" class="selecionar-parcela" data-valor="${p.corrigido}" ${marcado ? "checked" : ""} />
+          </td>
+          <td>${p.contrato}-${p.parcela}</td>
+          <td>${formatarData(p.datavencimento)}</td>
+          <td>R$ ${p.valorvencimento.toFixed(2).replace(".", ",")}</td>
+          <td>R$ ${p.corrigido.toFixed(2).replace(".", ",")}</td>
+          <td>${p.atrasada ? `${p.atraso} dia(s)` : "-"}</td>
+          <td>
+          <button onclick="abrirJanelaProdutoCompleta('${loja}', '${contrato}')" 
             style="background:#1976d2; color:#fff; padding:6px 10px; border:none; border-radius:4px; cursor:pointer;">
             Ver Produto
           </button>
         </td>
       </tr>
-      `);
+    `);
       
     }
 
