@@ -341,7 +341,7 @@ if (btnVoltar) {
       ? `da parcela ${listaParcelas[0]}`
       : `das parcelas ${listaParcelas.join(", ")}`;
 
-    const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
+    const mensagem = `${textoParcelas}${total.toFixed(2).replace(".", ",")} `;
 
     const numero = "5511915417060";
     const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
