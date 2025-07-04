@@ -311,30 +311,35 @@ const btnVoltar = document.getElementById("voltarWhatsapp");
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
-    const parcelas = [];
+    let listaParcelas = [];
 
-    document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
+    // Percorre todos os checkboxes marcados
+    const selecionadas = document.querySelectorAll(".selecionar-parcela:checked");
+    selecionadas.forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
-      const idParcela = colunas[1]?.textContent.trim();
+
+      const contratoParcela = colunas[1]?.textContent.trim();   // Ex: 12345-01
+      const vencimento = colunas[2]?.textContent.trim();        // Ex: 2025-07-10
+      const valorCorrigido = colunas[4]?.textContent.trim();    // Ex: R$ 71,68
 
       const valor = parseFloat(cb.dataset.valor);
       if (!isNaN(valor)) total += valor;
 
-      parcelas.push(idParcela);
+      // Adiciona na lista de parcelas
+      listaParcelas.push(`• ${contratoParcela} | Venc: ${vencimento} | Valor: ${valorCorrigido}`);
     });
 
-    // 🔧 Monta a mensagem simples e concatenada
-    const textoParcelas = parcelas.length === 1
-      ? `da parcela ${parcelas[0]}`
-      : `das parcelas ${parcelas.join(", ")}`;
+    // Monta a mensagem completa
+    let mensagemFinal = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}`;
+    
+    if (listaParcelas.length > 0) {
+      mensagemFinal += `\n\nParcelas selecionadas:\n${listaParcelas.join("\n")}`;
+    }
 
-    const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
-
-    // ✅ Encode blindado e compatível
-    const textoFinal = encodeURIComponent(mensagem);
+    // Abre link no WhatsApp
     const numero = "5511915417060";
-    const link = `https://wa.me/${numero}?text=${textoFinal}`;
+    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagemFinal)}`;
     window.open(link, "_blank");
   });
 }
