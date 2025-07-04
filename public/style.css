@@ -69,17 +69,22 @@ h1 {
 
 table {
   width: 100%;
-  font-size: 15px;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #fff;
+  border-collapse: collapse;
+  font-size: 14px;
+  table-layout: fixed; /* força colunas com largura proporcional */
 }
 
+
 th, td {
-  padding: 10px 8px;
+  padding: 6px 4px;
   border: 1px solid #e0e0e0;
-  text-align: center;
+  text-align: left;
+  word-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 th {
   background: #e3edfa;
   color: #1976d2;
