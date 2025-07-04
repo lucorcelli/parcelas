@@ -91,7 +91,7 @@ export default async function handler(req, res) {
     }
 
     // 🔄 Detecta 403 e tenta novamente com novo token
-    if (response.status === 403) {
+    if (response.status === 903) {
       console.warn("🚫 Token recusado. Gerando novo token...");
       tokenCache.token = null;
       tokenCache.geradoEm = null;
