@@ -322,41 +322,37 @@ function adicionarEventoCheckboxes() {
 }
 
 
-  // ✅ Botão Voltar WhatsApp
 const btnVoltar = document.getElementById("voltarWhatsapp");
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
 
-    // 📌 Coleta as parcelas selecionadas
-    const selecionadas = Array.from(document.querySelectorAll(".selecionar-parcela:checked"))
-      .map(cb => {
-        const linha = cb.closest("tr");
-        const colunas = linha.querySelectorAll("td");
+    // 📦 Monta lista de parcelas selecionadas
+    const selecionadas = Array.from(document.querySelectorAll(".selecionar-parcela:checked")).map(cb => {
+      const linha = cb.closest("tr");
+      const colunas = linha.querySelectorAll("td");
 
-        const contratoParcela = colunas[1]?.textContent.trim();   // Ex: 12345-01
-        const vencimento = colunas[2]?.textContent.trim();        // Ex: 2025-07-10
-        const valorCorrigido = colunas[4]?.textContent.trim();    // Ex: R$ 120,50
+      const contratoParcela = colunas[1]?.textContent.trim();   // Ex: 12345-01
+      const vencimento = colunas[2]?.textContent.trim();        // Ex: 2025-07-10
+      const valorCorrigido = colunas[4]?.textContent.trim();    // Ex: R$ 120,50
 
-        const valor = parseFloat(cb.dataset.valor);
-        if (!isNaN(valor)) total += valor;
+      const valor = parseFloat(cb.dataset.valor);
+      if (!isNaN(valor)) total += valor;
 
-        return `• ${contratoParcela} | Venc: ${vencimento} | Corrigido: ${valorCorrigido}`;
-      });
+      return `• ${contratoParcela} | Venc: ${vencimento} | Corrigido: ${valorCorrigido}`;
+    });
 
-    // ✅ Monta a mensagem final
+    // ✅ Monta mensagem final com valor + parcelas
     const mensagem = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}
 
 Parcelas selecionadas:
 ${selecionadas.join("\n")}`;
 
-    // ✅ Gera e abre o link pro WhatsApp
-    const numero = "5511915417060"; // ajuste aqui se precisar
-    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+    const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
     window.open(link, "_blank");
   });
 }
-
+  
   // ✅ Botões do modal Pix
   const abrirPix = document.getElementById("abrirPix");
   const fecharPix = document.getElementById("fecharModalPix");
