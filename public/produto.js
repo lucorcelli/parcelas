@@ -1,7 +1,6 @@
 function abrirJanelaProdutoCompleta(loja, contrato) {
   const url = `/api/produtoapi?loja=${loja}&codigo=${contrato}`;
-  window.open(url, "_blank"); // ou usar fetch + popup se quiser mostrar formatado
-
+  const popup = window.open("", "_blank", "width=600,height=550"); // ✅ agora popup existe
 
   popup.document.write(`
     <html>
@@ -14,30 +13,11 @@ function abrirJanelaProdutoCompleta(loja, contrato) {
             padding: 20px;
             color: #333;
           }
-          h2 {
-            color: #1976d2;
-            margin-bottom: 4px;
-          }
-          p {
-            margin: 8px 0;
-            font-size: 1.05em;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-            font-size: 15px;
-          }
-          th, td {
-            padding: 10px 8px;
-            border: 1px solid #e0e0e0;
-            text-align: left;
-          }
-          th {
-            background: #e3edfa;
-            color: #1976d2;
-            font-weight: 700;
-          }
+          h2 { color: #1976d2; margin-bottom: 4px; }
+          p { margin: 8px 0; font-size: 1.05em; }
+          table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 15px; }
+          th, td { padding: 10px 8px; border: 1px solid #e0e0e0; text-align: left; }
+          th { background: #e3edfa; color: #1976d2; font-weight: 700; }
         </style>
       </head>
       <body>
