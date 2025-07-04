@@ -21,20 +21,18 @@ function renderizarParcelas(parcelas) {
   const htmlBuilder = [];
 
   parcelas.forEach(p => {
-    htmlBuilder.push(`
-      <tr>
-        <td>${p.contrato}-${p.parcela}</td>
-        <td>${formatarData(p.vencimento)}</td>
-        <td>R$ ${p.valorOriginal.toFixed(2).replace(".", ",")}</td>
-        <td>R$ ${p.valorCorrigido.toFixed(2).replace(".", ",")}</td>
-        <td>${p.atraso || "-"}</td>
-        <td>
-          <button onclick="abrirJanelaProdutoCompleta('${p.contrato}')" style="background:#1976d2; color:#fff; padding:5px 10px; border-radius:5px; border:none; cursor:pointer;">
-            Ver Produto
-          </button>
-        </td>
-      </tr>
-    `);
+   htmlBuilder.push(`
+  <tr>
+    <td>${p.contrato}-${p.numero}</td>
+    <td>${formatarData(p.vencimento)}</td>
+    <td>R$ ${p.valor.toFixed(2).replace(".", ",")}</td>
+    <td>
+      <button onclick="abrirJanelaProdutoCompleta('${p.loja}', '${p.contrato}')" style="padding:6px 10px; background:#1976d2; color:#fff; border:none; border-radius:4px; cursor:pointer;">
+        Ver Produto
+      </button>
+    </td>
+  </tr>
+`);
   });
 
   document.querySelector("#tabelaParcelas tbody").innerHTML = htmlBuilder.join("");
