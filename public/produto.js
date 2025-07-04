@@ -1,5 +1,8 @@
 function abrirJanelaProdutoCompleta(loja, contrato) {
   const url = `/api/produtoapi?loja=${loja}&codigo=${contrato}`;
+  const largura = Math.min(window.innerWidth, 600);
+  const altura = Math.min(window.innerHeight, 550);
+  const popup = window.open("", "_blank", `width=${largura},height=${altura}`);
   const popup = window.open(url, "_blank"); // sem dimensões
 
   popup.document.write(`
