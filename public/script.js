@@ -325,30 +325,29 @@ const btnVoltar = document.getElementById("voltarWhatsapp");
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
-    const parcelas = [];
+    const parcelasSelecionadas = [];
 
     document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
-      const idParcela = colunas[1]?.textContent.trim();
+      const contratoParcela = colunas[1]?.textContent.trim(); // ex: 100074519
 
       const valor = parseFloat(cb.dataset.valor);
       if (!isNaN(valor)) total += valor;
 
-      parcelas.push(idParcela);
+      parcelasSelecionadas.push(contratoParcela);
     });
 
-    // 🔧 Monta a mensagem simples e concatenada
-    const textoParcelas = parcelas.length === 1
-      ? `da parcela ${parcelas[0]}`
-      : `das parcelas ${parcelas.join(", ")}`;
+    // ✍️ Monta o texto com a(s) parcela(s)
+    const textoParcelas = parcelasSelecionadas.length === 1
+      ? `da parcela ${parcelasSelecionadas[0]}`
+      : `das parcelas ${parcelasSelecionadas.join(", ")}`;
 
     const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
 
-    // ✅ Encode blindado e compatível
-    const textoFinal = encodeURIComponent(mensagem);
+    // ✅ Usa o formato direto do WhatsApp (sem parâmetros extras)
     const numero = "5511915417060";
-    const link = `https://wa.me/${numero}?text=${textoFinal}`;
+    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
     window.open(link, "_blank");
   });
 }
