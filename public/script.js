@@ -306,51 +306,41 @@ function adicionarEventoCheckboxes() {
       atualizarBotaoSelecionarTodos();
     });
   });
-
+}
 const btnVoltar = document.getElementById("voltarWhatsapp");
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
-    let listaParcelas = [];
+    const parcelas = [];
 
-    const selecionadas = document.querySelectorAll(".selecionar-parcela:checked");
-    selecionadas.forEach(cb => {
+    document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
+      const idParcela = colunas[1]?.textContent.trim();
 
-      const parcela = colunas[1]?.textContent.trim();
-      const venc = colunas[2]?.textContent.trim();
-      const valor = colunas[4]?.textContent.trim();
+      const valor = parseFloat(cb.dataset.valor);
+      if (!isNaN(valor)) total += valor;
 
-      const num = parseFloat(cb.dataset.valor);
-      if (!isNaN(num)) total += num;
+      parcelas.push(idParcela);
+    });
 
-      listaParcelas.push(`${parcela} - ${venc} - ${valor}`);
-    }};
+    // 🔧 Monta a mensagem simples e concatenada
+    const textoParcelas = parcelas.length === 1
+      ? `da parcela ${parcelas[0]}`
+      : `das parcelas ${parcelas.join(", ")}`;
 
-    // 🔧 Limpa e formata a mensagem
-    const textoParcelas = listaParcelas.join('\n');
-    const mensagemFinal = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}\n\nParcelas:\n${textoParcelas}`;
+    const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
 
-    // 🔁 Agora codifica corretamente
-    const textoSeguro = encodeURIComponent(mensagemFinal.replace(/\n/g, '\n').trim());
-
-    const link = `https://wa.me/5511915417060?text=${textoSeguro}`;
-    window.open(link, '_blank');
-  });
-}
-    const textoParcelas = listaParcelas.length === 1
-      ? `da parcela ${listaParcelas[0]}`
-      : `das parcelas ${listaParcelas.join(", ")}`;
-
-    const mensagem = `${textoParcelas}${total.toFixed(2).replace(".", ",")} `;
-
+    // ✅ Encode blindado e compatível
+    const textoFinal = encodeURIComponent(mensagem);
     const numero = "5511915417060";
-    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+    const link = `https://wa.me/${numero}?text=${textoFinal}`;
     window.open(link, "_blank");
   });
 }
 
+
+  
   // ✅ Pegando o CPF da URL
   const params = new URLSearchParams(window.location.search);
   let cpf = params.get("token");
