@@ -59,7 +59,7 @@ function abrirJanelaProdutoCompleta(loja, contrato) {
 
         <h3>🛍️ Produtos Adquiridos</h3>
         <table>
-          <thead><tr><th>Produto</th><th>Marca</th><th>Tipo</th><th>Valor</th></tr></thead>
+          <thead><tr><th>Produto</th><th>Valor</th></tr></thead>
           <tbody>${produtosHTML}</tbody>
         </table>
 
