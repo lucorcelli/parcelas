@@ -321,46 +321,36 @@ function adicionarEventoCheckboxes() {
   });
 }
 
-
 const btnVoltar = document.getElementById("voltarWhatsapp");
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
     let listaParcelas = [];
 
-    // Percorre todos os checkboxes marcados
     const selecionadas = document.querySelectorAll(".selecionar-parcela:checked");
     selecionadas.forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
 
-      const contratoParcela = colunas[1]?.textContent.trim();   // Ex: 12345-01
-      const vencimento = colunas[2]?.textContent.trim();        // Ex: 2025-07-10
-      const valorCorrigido = colunas[4]?.textContent.trim();    // Ex: R$ 71,68
+      const parcela = colunas[1]?.textContent.trim();
+      const venc = colunas[2]?.textContent.trim();
+      const valor = colunas[4]?.textContent.trim();
 
-      const valor = parseFloat(cb.dataset.valor);
-      if (!isNaN(valor)) total += valor;
+      const num = parseFloat(cb.dataset.valor);
+      if (!isNaN(num)) total += num;
 
-      // Adiciona na lista de parcelas
-      listaParcelas.push(`• ${contratoParcela} | Venc: ${vencimento} | Valor: ${valorCorrigido}`);
+      listaParcelas.push(`${parcela} - ${venc} - ${valor}`);
     });
 
-    // Monta a mensagem completa
-    let mensagemFinal = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}`;
-    
-    if (listaParcelas.length > 0) {
-      mensagemFinal += `\n\nParcelas selecionadas:\n${listaParcelas.join("\n")}`;
-    }
+    // 🔧 Limpa e formata a mensagem
+    const textoParcelas = listaParcelas.join('\n');
+    const mensagemFinal = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}\n\nParcelas:\n${textoParcelas}`;
 
-    // Abre link no WhatsApp
-    const numero = "5511915417060";
-    const textoWhatsApp = mensagemFinal
-      .trim()
-      .replace(/\s+/g, ' ')              // remove excesso de espaços
-      .replace(/\n/g, '%0A');            // converte quebra de linha manualmente
-    
-    const link = `https://wa.me/${numero}?text=${textoWhatsApp}`;
-    window.open(link, "_blank");
+    // 🔁 Agora codifica corretamente
+    const textoSeguro = encodeURIComponent(mensagemFinal.replace(/\n/g, '\n').trim());
+
+    const link = `https://wa.me/5511915417060?text=${textoSeguro}`;
+    window.open(link, '_blank');
   });
 }
   
