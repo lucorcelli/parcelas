@@ -343,9 +343,7 @@ if (btnVoltar) {
       : `das parcelas ${listaParcelas.join(", ")}`;
 
     const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
-
-    const numero = "5511915417060";
-    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+    const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
     window.open(link, "_blank");
   });
 }
