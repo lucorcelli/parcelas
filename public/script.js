@@ -327,7 +327,6 @@ if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
 
-    // 📦 Monta lista de parcelas selecionadas
     const selecionadas = Array.from(document.querySelectorAll(".selecionar-parcela:checked")).map(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
@@ -342,8 +341,7 @@ if (btnVoltar) {
       return `• ${contratoParcela} | Venc: ${vencimento} | Corrigido: ${valorCorrigido}`;
     });
 
-    // ✅ Monta mensagem final com valor + parcelas
-    const mensagem = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}
+    const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}
 
 Parcelas selecionadas:
 ${selecionadas.join("\n")}`;
