@@ -172,8 +172,8 @@ async function buscarParcelas(cpf) {
     for (let i = 0; i < parcelasComCalculo.length; i++) {
       const p = parcelasComCalculo[i];
       const marcado = existeVencida ? p.atrasada : i === 0;
-      const loja = p.contarecloja;
-      const contrato = p.contrato.split("-")[1]?.split(":")[0] || p.contrato;
+      const [loja, contratoRaw] = p.contrato.split("-");
+      const contrato = contratoRaw.split(":")[0];
       totalGeral += p.corrigido;
     
       htmlBuilder.push(`
