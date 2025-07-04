@@ -235,39 +235,6 @@ function atualizarSelecionado() {
   if (resumoSpan) resumoSpan.textContent = total.toFixed(2).replace(".", ",");
 }
 
-const btnVoltar = document.getElementById("voltarWhatsapp");
-if (btnVoltar) {
-  btnVoltar.addEventListener("click", () => {
-    let total = 0;
-    let listaParcelas = [];
-
-    const selecionadas = document.querySelectorAll(".selecionar-parcela:checked");
-    selecionadas.forEach(cb => {
-      const linha = cb.closest("tr");
-      const colunas = linha.querySelectorAll("td");
-
-      const parcela = colunas[1]?.textContent.trim();
-      const venc = colunas[2]?.textContent.trim();
-      const valor = colunas[4]?.textContent.trim();
-
-      const num = parseFloat(cb.dataset.valor);
-      if (!isNaN(num)) total += num;
-
-      listaParcelas.push(`${parcela} - ${venc} - ${valor}`);
-    });
-
-    // 🔧 Limpa e formata a mensagem
-    const textoParcelas = listaParcelas.join('\n');
-    const mensagemFinal = `Gostaria de pagar o valor selecionado: ${textoParcelas}`;
-
-    // 🔁 Agora codifica corretamente
-    const textoSeguro = encodeURIComponent(mensagemFinal.replace(/\n/g, '\n').trim());
-
-    const link = `https://wa.me/5511915417060?text=${textoSeguro}`;
-    window.open(link, '_blank');
-  });
-}
-
 
 // Modal Pix
 document.getElementById("abrirPix").addEventListener("click", function() {
@@ -346,17 +313,32 @@ if (btnVoltar) {
     let total = 0;
     let listaParcelas = [];
 
-    document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
+    const selecionadas = document.querySelectorAll(".selecionar-parcela:checked");
+    selecionadas.forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
 
-      const contratoParcela = colunas[1]?.textContent.trim(); // Ex: 100074519
-      const valor = parseFloat(cb.dataset.valor);
-      if (!isNaN(valor)) total += valor;
+      const parcela = colunas[1]?.textContent.trim();
+      const venc = colunas[2]?.textContent.trim();
+      const valor = colunas[4]?.textContent.trim();
 
-      listaParcelas.push(contratoParcela);
+      const num = parseFloat(cb.dataset.valor);
+      if (!isNaN(num)) total += num;
+
+      listaParcelas.push(`${parcela} - ${venc} - ${valor}`);
     });
 
+    // 🔧 Limpa e formata a mensagem
+    const textoParcelas = listaParcelas.join('\n');
+    const mensagemFinal = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}\n\nParcelas:\n${textoParcelas}`;
+
+    // 🔁 Agora codifica corretamente
+    const textoSeguro = encodeURIComponent(mensagemFinal.replace(/\n/g, '\n').trim());
+
+    const link = `https://wa.me/5511915417060?text=${textoSeguro}`;
+    window.open(link, '_blank');
+  });
+}
     const textoParcelas = listaParcelas.length === 1
       ? `da parcela ${listaParcelas[0]}`
       : `das parcelas ${listaParcelas.join(", ")}`;
