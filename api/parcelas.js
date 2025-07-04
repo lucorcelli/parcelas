@@ -46,7 +46,11 @@ export default async function handler(req, res) {
   if (!cpf) {
     return res.status(400).json({ erro: "CPF obrigatório" });
   }
-
+  if (cpf === "111.111.111-11" || cpf === "11111111111") {
+  tokenCache.token = null;
+  tokenCache.geradoEm = null;
+  console.log("⚠️ Token resetado automaticamente devido ao CPF de teste.");
+  }
   const url = `https://integracaodatasystem.useserver.com.br/api/v1/personalizado-1/meucrediario/vendas?cpf=${cpf}&dataInicio=2022-01-01&horaIni=00%3A00&dataFim=2035-06-01&horaFim=00%3A00&itensPorPagina=20&pagina=1&baixado=2`;
 
   try {
