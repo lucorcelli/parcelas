@@ -327,30 +327,26 @@ if (btnVoltar) {
     let total = 0;
     let listaParcelas = [];
 
-    const selecionadas = document.querySelectorAll(".selecionar-parcela:checked");
-    selecionadas.forEach(cb => {
+    document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
 
-      const parcela = colunas[1]?.textContent.trim();
-      const venc = colunas[2]?.textContent.trim();
-      const valor = colunas[4]?.textContent.trim();
+      const contratoParcela = colunas[1]?.textContent.trim(); // Ex: 100074519
+      const valor = parseFloat(cb.dataset.valor);
+      if (!isNaN(valor)) total += valor;
 
-      const num = parseFloat(cb.dataset.valor);
-      if (!isNaN(num)) total += num;
-
-      listaParcelas.push(`${parcela} - ${venc} - ${valor}`);
+      listaParcelas.push(contratoParcela);
     });
 
-    // 🔧 Limpa e formata a mensagem
-    const textoParcelas = listaParcelas.join('\n');
-    const mensagemFinal = `Gostaria de pagar o valor selecionado: R$ ${total.toFixed(2).replace(".", ",")}\n\nParcelas:\n${textoParcelas}`;
+    const textoParcelas = listaParcelas.length === 1
+      ? `da parcela ${listaParcelas[0]}`
+      : `das parcelas ${listaParcelas.join(", ")}`;
 
-    // 🔁 Agora codifica corretamente
-    const textoSeguro = encodeURIComponent(mensagemFinal.replace(/\n/g, '\n').trim());
+    const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
 
-    const link = `https://wa.me/5511915417060?text=${textoSeguro}`;
-    window.open(link, '_blank');
+    const numero = "5511915417060";
+    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+    window.open(link, "_blank");
   });
 }
   
