@@ -172,14 +172,10 @@ async function buscarParcelas(cpf) {
     for (let i = 0; i < parcelasComCalculo.length; i++) {
       const p = parcelasComCalculo[i];
       const marcado = existeVencida ? p.atrasada : i === 0;
-      const partes = p.contrato.split("-");
-      const lojaExtraida = partes[0];       // "4"
-      const contratoExtraido = partes[1];   // "1000754273"
+      const [loja, contrato] = p.contrato.split("-");  // ← 👈 aqui está limpo e funcional
+    
       totalGeral += p.corrigido;
-      const partes = p.contrato.split("-");
-      const loja = partes[0];
-      const contrato = partes[1];
-
+    
       htmlBuilder.push(`
         <tr class="${p.atrasada ? "vencida" : ""}">
           <td>
@@ -191,16 +187,15 @@ async function buscarParcelas(cpf) {
           <td>R$ ${p.corrigido.toFixed(2).replace(".", ",")}</td>
           <td>${p.atrasada ? `${p.atraso} dia(s)` : "-"}</td>
           <td>
-          <button onclick="abrirJanelaProdutoCompleta('${loja}', '${contrato}')" 
-            style="background:#1976d2; color:#fff; padding:6px 10px; border:none; border-radius:4px; cursor:pointer;">
-            Ver Produto
-          </button>
-        </td>
-      </tr>
-    `);
-      
+            <button onclick="abrirJanelaProdutoCompleta('${loja}', '${contrato}')"
+              style="background:#1976d2; color:#fff; padding:6px 10px; border:none; border-radius:4px; cursor:pointer;">
+              Ver Produto
+            </button>
+          </td>
+        </tr>
+      `);
     }
-
+    
     tbody.innerHTML = htmlBuilder.join("");
 
     document.getElementById("dadosCliente").innerHTML = `
