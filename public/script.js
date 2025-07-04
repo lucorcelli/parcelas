@@ -326,9 +326,11 @@ const btnVoltar = document.getElementById("voltarWhatsapp");
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
+    let listaParcelas = [];
 
-    // Coleta os dados das parcelas marcadas
-    const selecionadas = Array.from(document.querySelectorAll(".selecionar-parcela:checked")).map(cb => {
+    // Percorre todos os checkboxes marcados
+    const selecionadas = document.querySelectorAll(".selecionar-parcela:checked");
+    selecionadas.forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
 
@@ -339,15 +341,18 @@ if (btnVoltar) {
       const valor = parseFloat(cb.dataset.valor);
       if (!isNaN(valor)) total += valor;
 
-      return `• ${contratoParcela} | Venc: ${vencimento} | Valor: ${valorCorrigido}`;
+      // Adiciona na lista de parcelas
+      listaParcelas.push(`• ${contratoParcela} | Venc: ${vencimento} | Valor: ${valorCorrigido}`);
     });
 
-    // Junta a mensagem completa
-    const mensagemFinal = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}
+    // Monta a mensagem completa
+    let mensagemFinal = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}`;
+    
+    if (listaParcelas.length > 0) {
+      mensagemFinal += `\n\nParcelas selecionadas:\n${listaParcelas.join("\n")}`;
+    }
 
-Parcelas selecionadas:
-${selecionadas.join("\n")}`;
-
+    // Abre link no WhatsApp
     const numero = "5511915417060";
     const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagemFinal)}`;
     window.open(link, "_blank");
