@@ -43,8 +43,6 @@ function abrirJanelaProdutoCompleta(loja, contrato) {
         </tr>
       `).join("");
 
-      const parcelas = data.parcelas || [];
-
       // 📌 Adiciona isso logo aqui!
       parcelas.sort((a, b) => new Date(a.vencimento) - new Date(b.vencimento));
 
