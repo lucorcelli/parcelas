@@ -125,7 +125,7 @@ async function buscarParcelas(cpf) {
         p.capitalaberto > 0 &&
         p.valorvencimento > 0
       );
-      abertas.forEach(p => todasParcelas.push({ contrato, ...p }));
+      abertas.forEach(p => todasParcelas.push({ loja: item.loja, contrato, ...p }));
     }
 
     if (todasParcelas.length === 0) {
