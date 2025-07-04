@@ -29,7 +29,23 @@ export default async function handler(req, res) {
         erro: "Usuário não autenticado. Verifique suas credenciais."
       });
     }
-
+    if (response.status === 403) {
+      console.warn("🚫 Token possivelmente expirado. Resetando...");
+      tokenCache.token = null;
+      tokenCache.geradoEm = null;
+    
+      // Tenta nova autenticação
+      const novoToken = await obterToken();
+      // Refaz a requisição com novo token
+      const retryResponse = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${novoToken}`
+        }
+      });
+    
+      // Use retryResponse daqui pra frente...
+    }
     if (!authResponse.ok) {
       throw new Error(`Erro ao autenticar: ${authResponse.status}`);
     }
