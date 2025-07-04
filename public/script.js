@@ -31,8 +31,7 @@ function renderizarParcelas(parcelas) {
     <td>${p.atraso || "-"}</td>
     <td>
       <button onclick="abrirJanelaProdutoCompleta('5', '1000743533')">Ver Produto</button>
-        style="padding:6px 10px; background:#1976d2; color:#fff; border:none; border-radius:4px; cursor:pointer;">
-        Ver Produto
+        style="background:red; color:white; font-size:20px;"
       </button>
     </td>
   </tr>
