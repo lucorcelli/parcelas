@@ -320,51 +320,34 @@ function adicionarEventoCheckboxes() {
     });
   });
 }
-
 const btnVoltar = document.getElementById("voltarWhatsapp");
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
-    const parcelasSelecionadas = [];
+    let listaParcelas = [];
 
     document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
-      const contratoParcela = colunas[1]?.textContent.trim(); // ex: 100074519
 
+      const contratoParcela = colunas[1]?.textContent.trim(); // Ex: 100074519
       const valor = parseFloat(cb.dataset.valor);
       if (!isNaN(valor)) total += valor;
 
-      parcelasSelecionadas.push(contratoParcela);
+      listaParcelas.push(contratoParcela);
     });
 
-    // ✍️ Monta o texto com a(s) parcela(s)
-    const textoParcelas = parcelasSelecionadas.length === 1
-      ? `da parcela ${parcelasSelecionadas[0]}`
-      : `das parcelas ${parcelasSelecionadas.join(", ")}`;
+    const textoParcelas = listaParcelas.length === 1
+      ? `da parcela ${listaParcelas[0]}`
+      : `das parcelas ${listaParcelas.join(", ")}`;
 
     const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
 
-    // ✅ Usa o formato direto do WhatsApp (sem parâmetros extras)
-   const numero = "5511915417060";
-  const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ 71,68 da parcela 100074519`;
-  const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
-  window.open(link, "_blank");
+    const numero = "5511915417060";
+    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+    window.open(link, "_blank");
   });
 }
-  
-  // ✅ Botões do modal Pix
-  const abrirPix = document.getElementById("abrirPix");
-  const fecharPix = document.getElementById("fecharModalPix");
-  const modalPix = document.getElementById("modalPix");
-
-  if (abrirPix && fecharPix && modalPix) {
-    abrirPix.addEventListener("click", () => modalPix.style.display = "flex");
-    fecharPix.addEventListener("click", () => modalPix.style.display = "none");
-    modalPix.addEventListener("click", (e) => {
-      if (e.target.id === "modalPix") modalPix.style.display = "none";
-    });
-  }
 
   // ✅ Pegando o CPF da URL
   const params = new URLSearchParams(window.location.search);
