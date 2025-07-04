@@ -327,26 +327,29 @@ if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
 
+    // Coleta os dados das parcelas marcadas
     const selecionadas = Array.from(document.querySelectorAll(".selecionar-parcela:checked")).map(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
 
       const contratoParcela = colunas[1]?.textContent.trim();   // Ex: 12345-01
       const vencimento = colunas[2]?.textContent.trim();        // Ex: 2025-07-10
-      const valorCorrigido = colunas[4]?.textContent.trim();    // Ex: R$ 120,50
+      const valorCorrigido = colunas[4]?.textContent.trim();    // Ex: R$ 71,68
 
       const valor = parseFloat(cb.dataset.valor);
       if (!isNaN(valor)) total += valor;
 
-      return `• ${contratoParcela} | Venc: ${vencimento} | Corrigido: ${valorCorrigido}`;
+      return `• ${contratoParcela} | Venc: ${vencimento} | Valor: ${valorCorrigido}`;
     });
 
-    const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}
+    // Junta a mensagem completa
+    const mensagemFinal = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}
 
 Parcelas selecionadas:
 ${selecionadas.join("\n")}`;
 
-    const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
+    const numero = "5511915417060";
+    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagemFinal)}`;
     window.open(link, "_blank");
   });
 }
