@@ -354,7 +354,12 @@ if (btnVoltar) {
 
     // Abre link no WhatsApp
     const numero = "5511915417060";
-    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagemFinal)}`;
+    const textoWhatsApp = mensagemFinal
+      .trim()
+      .replace(/\s+/g, ' ')              // remove excesso de espaços
+      .replace(/\n/g, '%0A');            // converte quebra de linha manualmente
+    
+    const link = `https://wa.me/${numero}?text=${textoWhatsApp}`;
     window.open(link, "_blank");
   });
 }
