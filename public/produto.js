@@ -1,6 +1,6 @@
 function abrirJanelaProdutoCompleta(loja, contrato) {
   const url = `/api/produtoapi?loja=${loja}&codigo=${contrato}`;
-  const popup = window.open("", "_blank", "width=600,height=550"); // ✅ agora popup existe
+  const popup = window.open(url, "_blank"); // sem dimensões
 
   popup.document.write(`
     <html>
@@ -53,8 +53,6 @@ function abrirJanelaProdutoCompleta(loja, contrato) {
 
       popup.document.body.innerHTML = `
         <h2>Compra #${data.codigo}</h2>
-        <p><strong>Cliente:</strong> ${cliente.nome} ${cliente.sobrenome}</p>
-        <p><strong>CPF:</strong> ${cliente.cpf}</p>
         <p><strong>Valor Total:</strong> R$ ${data.valorTotal.toFixed(2).replace(".", ",")}</p>
         <p><strong>Emissão:</strong> ${data.emissao}</p>
 
