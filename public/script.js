@@ -325,25 +325,30 @@ const btnVoltar = document.getElementById("voltarWhatsapp");
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
     let total = 0;
-    let listaParcelas = [];
+    const parcelas = [];
 
     document.querySelectorAll(".selecionar-parcela:checked").forEach(cb => {
       const linha = cb.closest("tr");
       const colunas = linha.querySelectorAll("td");
+      const idParcela = colunas[1]?.textContent.trim();
 
-      const contratoParcela = colunas[1]?.textContent.trim(); // Ex: 100074519
       const valor = parseFloat(cb.dataset.valor);
       if (!isNaN(valor)) total += valor;
 
-      listaParcelas.push(contratoParcela);
+      parcelas.push(idParcela);
     });
 
-    const textoParcelas = listaParcelas.length === 1
-      ? `da parcela ${listaParcelas[0]}`
-      : `das parcelas ${listaParcelas.join(", ")}`;
+    // 🔧 Monta a mensagem simples e concatenada
+    const textoParcelas = parcelas.length === 1
+      ? `da parcela ${parcelas[0]}`
+      : `das parcelas ${parcelas.join(", ")}`;
 
     const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
-    const link = `https://wa.me/5511915417060?text=${encodeURIComponent(mensagem)}`;
+
+    // ✅ Encode blindado e compatível
+    const textoFinal = encodeURIComponent(mensagem);
+    const numero = "5511915417060";
+    const link = `https://wa.me/${numero}?text=${textoFinal}`;
     window.open(link, "_blank");
   });
 }
