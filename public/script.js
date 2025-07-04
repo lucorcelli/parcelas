@@ -19,8 +19,8 @@ function calcularJurosDiario(dias) {
 }
 function renderizarParcelas(parcelas) {
   const htmlBuilder = [];
-
   parcelas.forEach(p => {
+    console.log("Parcela:", p);
     htmlBuilder.push(`
       <tr>
         <td><input type="checkbox" /></td>
