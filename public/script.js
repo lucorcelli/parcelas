@@ -346,9 +346,10 @@ if (btnVoltar) {
     const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")} ${textoParcelas}`;
 
     // ✅ Usa o formato direto do WhatsApp (sem parâmetros extras)
-    const numero = "5511915417060";
-    const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
-    window.open(link, "_blank");
+   const numero = "5511915417060";
+  const mensagem = `Gostaria de pagar o valor selecionado pelo link: R$ 71,68 da parcela 100074519`;
+  const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+  window.open(link, "_blank");
   });
 }
   
