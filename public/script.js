@@ -326,7 +326,7 @@ if (btnVoltar) {
       if (!isNaN(num)) total += num;
 
       listaParcelas.push(`${parcela} - ${venc} - ${valor}`);
-    });
+    
 
     // 🔧 Limpa e formata a mensagem
     const textoParcelas = listaParcelas.join('\n');
