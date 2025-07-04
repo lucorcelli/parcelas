@@ -106,6 +106,7 @@ export default async function handler(req, res) {
 
     let dados;
     try {
+      console.log("🧪 Texto recebido da API externa:", texto);
       dados = JSON.parse(texto);
     } catch (parseError) {
       console.error("Erro ao fazer parsing do JSON:", parseError);
