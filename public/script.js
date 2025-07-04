@@ -22,22 +22,20 @@ function renderizarParcelas(parcelas) {
 
   parcelas.forEach(p => {
   htmlBuilder.push(`
-    <tr>
-      <td>
-        <input type="checkbox" />
-      </td>
-      <td>${p.contrato}-${p.numero}</td>
-      <td>${formatarData(p.vencimento)}</td>
-      <td>R$ ${p.valorOriginal.toFixed(2).replace(".", ",")}</td>
-      <td>R$ ${p.valorCorrigido.toFixed(2).replace(".", ",")}</td>
-      <td>${p.atraso || "-"}</td>
-      <td>
-        <button onclick="abrirJanelaProdutoCompleta('${p.loja}', '${p.contrato}')" style="background:#1976d2; color:#fff; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;">
-          Ver Produto
-        </button>
-      </td>
-    </tr>
-  `);
+  <tr>
+    <td><input type="checkbox" /></td>
+    <td>${p.contrato}-${p.numero}</td>
+    <td>${formatarData(p.vencimento)}</td>
+    <td>R$ ${p.valorOriginal.toFixed(2).replace(".", ",")}</td>
+    <td>R$ ${p.valorCorrigido.toFixed(2).replace(".", ",")}</td>
+    <td>${p.atraso || "-"}</td>
+    <td>
+      <button onclick="abrirJanelaProdutoCompleta('${p.loja}', '${p.contrato}')" style="padding:6px 10px; background:#1976d2; color:#fff; border:none; border-radius:4px; cursor:pointer;">
+        Ver Produto
+      </button>
+    </td>
+  </tr>
+`);
 });
 
   document.querySelector("#tabelaParcelas tbody").innerHTML = htmlBuilder.join("");
