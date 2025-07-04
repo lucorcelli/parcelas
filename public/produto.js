@@ -1,5 +1,5 @@
 function abrirJanelaProdutoCompleta(loja, contrato) {
-  const url = `https://integracaodatasystem.useserver.com.br/api/v1/vendas/loja/${loja}/codigo/${contrato}`;
+  const url = `/api/produtoapi?loja=${loja}&codigo=${contrato}`;
   window.open(url, "_blank"); // ou usar fetch + popup se quiser mostrar formatado
 
 
