@@ -1,20 +1,24 @@
 export default async function handler(req, res) {
+  // Cache simples para guardar o token na memória
   let tokenCache = {
     token: null,
     geradoEm: null
   };
 
+  // 🔐 Função para obter token com cache e fallback
   async function obterToken() {
     const agora = Date.now();
 
+    // Verifica se o token ainda está válido (12h)
     if (
       tokenCache.token &&
       tokenCache.geradoEm &&
-      agora - tokenCache.geradoEm < 12 * 60 * 60 * 1000 // 12 horas
+      agora - tokenCache.geradoEm < 12 * 60 * 60 * 1000
     ) {
       return tokenCache.token;
     }
 
+    // Faz autenticação via API externa
     const authResponse = await fetch("https://integracaodatasystem.useserver.com.br/api/v1/autenticar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -25,27 +29,9 @@ export default async function handler(req, res) {
     });
 
     if (authResponse.status === 401) {
-      return res.status(401).json({
-        erro: "Usuário não autenticado. Verifique suas credenciais."
-      });
+      throw new Error("Usuário não autenticado. Verifique suas credenciais.");
     }
-    if (response.status === 403) {
-      console.warn("🚫 Token possivelmente expirado. Resetando...");
-      tokenCache.token = null;
-      tokenCache.geradoEm = null;
-    
-      // Tenta nova autenticação
-      const novoToken = await obterToken();
-      // Refaz a requisição com novo token
-      const retryResponse = await fetch(url, {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${novoToken}`
-        }
-      });
-    
-      // Use retryResponse daqui pra frente...
-    }
+
     if (!authResponse.ok) {
       throw new Error(`Erro ao autenticar: ${authResponse.status}`);
     }
@@ -57,30 +43,51 @@ export default async function handler(req, res) {
     return json.token;
   }
 
+  // 🧾 CPF vindo na URL
   const { cpf } = req.query;
 
   if (!cpf) {
     return res.status(400).json({ erro: "CPF obrigatório" });
   }
+
+  // 🧪 Reset automático em CPF de teste
   if (cpf === "111.111.111-11" || cpf === "11111111111") {
-  tokenCache.token = null;
-  tokenCache.geradoEm = null;
-  console.log("⚠️ Token resetado automaticamente devido ao CPF de teste.");
+    tokenCache.token = null;
+    tokenCache.geradoEm = null;
+    console.log("⚠️ Token resetado automaticamente devido ao CPF de teste.");
   }
+
+  // 🌐 URL da consulta de parcelas
   const url = `https://integracaodatasystem.useserver.com.br/api/v1/personalizado-1/meucrediario/vendas?cpf=${cpf}&dataInicio=2022-01-01&horaIni=00%3A00&dataFim=2035-06-01&horaFim=00%3A00&itensPorPagina=18&pagina=1&baixado=2`;
 
   try {
-    const token = await obterToken();
+    let token = await obterToken();
     console.log("🔑 Token em uso:", token.slice(0, 20) + "...");
     console.log("📡 URL consultada:", url);
 
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${token}`
       }
     });
 
+    // 🔄 Detecta 403 e tenta novamente com novo token
+    if (response.status === 403) {
+      console.warn("🚫 Token recusado. Gerando novo token...");
+      tokenCache.token = null;
+      tokenCache.geradoEm = null;
+      token = await obterToken();
+
+      response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
+
+    // Nenhuma parcela
     if (response.status === 204) {
       return res.status(204).json({
         sucesso: true,
@@ -89,6 +96,7 @@ export default async function handler(req, res) {
       });
     }
 
+    // Qualquer erro diferente
     if (!response.ok) {
       return res.status(response.status).json({
         erro: "Erro ao acessar API externa",
@@ -98,10 +106,8 @@ export default async function handler(req, res) {
 
     const texto = await response.text();
 
-    if (!texto) {
-      return res.status(502).json({
-        erro: "Resposta vazia da API externa"
-      });
+    if (!texto || texto.trim() === "") {
+      return res.status(502).json({ erro: "Resposta vazia da API externa" });
     }
 
     let dados;
@@ -109,15 +115,15 @@ export default async function handler(req, res) {
       console.log("🧪 Texto recebido da API externa:", texto);
       dados = JSON.parse(texto);
     } catch (parseError) {
-      console.error("Erro ao fazer parsing do JSON:", parseError);
-      return res.status(500).json({
-        erro: "Resposta inválida da API externa"
-      });
+      console.error("❌ Erro ao fazer parsing:", parseError.message);
+      return res.status(500).json({ erro: "Resposta inválida da API externa" });
     }
 
-    res.status(200).json(dados);
+    // Resposta final
+    return res.status(200).json(dados);
+
   } catch (err) {
-    console.error("💥 Erro geral na API:", err);
-    res.status(500).json({ erro: "Erro ao acessar a API externa" });
+    console.error("💥 Erro geral na API:", err.message || err);
+    return res.status(500).json({ erro: "Erro ao acessar a API externa" });
   }
 }
