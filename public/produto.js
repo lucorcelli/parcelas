@@ -39,8 +39,6 @@ function abrirJanelaProdutoCompleta(loja, contrato) {
       const produtosHTML = itens.map(item => `
         <tr>
           <td>${item.descricao}</td>
-          <td>${item.marca?.descricao || "-"}</td>
-          <td>${item.tipo?.descricao || "-"}</td>
           <td>R$ ${item.valor.toFixed(2).replace(".", ",")}</td>
         </tr>
       `).join("");
