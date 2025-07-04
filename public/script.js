@@ -30,8 +30,7 @@ function renderizarParcelas(parcelas) {
     <td>R$ ${p.valorCorrigido.toFixed(2).replace(".", ",")}</td>
     <td>${p.atraso || "-"}</td>
     <td>
-      <button 
-        onclick="abrirJanelaProdutoCompleta('${p.loja}', '${p.contrato}')" 
+      <button onclick="abrirJanelaProdutoCompleta('5', '1000743533')">Ver Produto</button>
         style="padding:6px 10px; background:#1976d2; color:#fff; border:none; border-radius:4px; cursor:pointer;">
         Ver Produto
       </button>
