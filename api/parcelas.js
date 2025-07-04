@@ -64,13 +64,30 @@ export default async function handler(req, res) {
     let token = await obterToken();
     console.log("🔑 Token em uso:", token.slice(0, 20) + "...");
     console.log("📡 URL consultada:", url);
-
+    
     let response = await fetch(url, {
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${token}`
       }
     });
+    
+    // 🔄 Retry em caso de token recusado
+    if (response.status === 403) {
+      console.warn("🚫 Token recusado. Resetando e tentando novamente...");
+      tokenCache.token = null;
+      tokenCache.geradoEm = null;
+    
+      token = await obterToken(); // gera novo token
+      console.log("🔑 Novo token gerado:", token.slice(0, 20) + "...");
+    
+      response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
 
     // 🔄 Detecta 403 e tenta novamente com novo token
     if (response.status === 403) {
