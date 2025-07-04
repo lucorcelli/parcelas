@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     });
     
     // 🔄 Retry em caso de token recusado
-    if (response.status === 403) {
+    if (response.status === 903) {
       console.warn("🚫 Token recusado. Resetando e tentando novamente...");
       tokenCache.token = null;
       tokenCache.geradoEm = null;
