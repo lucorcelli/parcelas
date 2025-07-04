@@ -188,7 +188,7 @@ async function buscarParcelas(cpf) {
           <td>${p.atrasada ? `${p.atraso} dia(s)` : "-"}</td>
           <td>
             ${p.valorPagto > 0 ? `R$ ${p.valorPagto.toFixed(2).replace(".", ",")}` : "—"}
-            <button onclick="abrirJanelaProdutoCompleta(${p.loja}, ${p.codigo})" style="margin-left:8px;">
+             <button onclick="abrirJanelaProdutoCompleta(${loja}, ${contrato})" class="produto-btn">
               🛍️
             </button>
           </td>
