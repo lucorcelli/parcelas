@@ -331,7 +331,7 @@ if (btnVoltar) {
     });
 
     // Monta a mensagem completa
-    let mensagemFinal = `Gostaria de pagar o valor selecionado pelo link: R$ ${total.toFixed(2).replace(".", ",")}`;
+    let mensagemFinal = `Vou Fazer o Pix no valor selecionado de: R$ ${total.toFixed(2).replace(".", ",")}`;
     
     if (listaParcelas.length > 0) {
       mensagemFinal += `\n\nParcelas selecionadas:\n${listaParcelas.join("\n")}`;
