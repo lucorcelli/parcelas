@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     console.log("⚠️ CPF de teste — token resetado.");
   }
 
-  const url = `${BASE_URL}/personalizado-1/meucrediario/vendas?cpf=${cpf}&dataInicio=2022-01-01&horaIni=00%3A00&dataFim=2035-06-01&horaFim=00%3A00&itensPorPagina=18&pagina=1&baixado=2`;
+  const url = `${BASE_URL}/personalizado-1/meucrediario/vendas?cpf=${cpf}&dataInicio=2022-01-01&horaIni=00%3A00&dataFim=2035-06-01&horaFim=00%3A00&itensPorPagina=20&pagina=1&baixado=2`;
   console.log("📡 URL:", url);
 
   try {
