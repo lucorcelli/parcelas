@@ -68,8 +68,8 @@ export default async function handler(req, res) {
     let response = await fetch(url, {
       headers: {
       accept: "application/json",
-      //Authorization: `Bearer ${token}` // ⬅️ comenta essa para usar token fixo
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJkYzA0MjFkOTc1YWJiNDliNGY3MTIxNzc2ZTc2MmY3ZDVkZmY5MTRlIl0sImp0aSI6ImQyZGY1MGI1MjQyZDQ1MmU4YWQ3NjAwMThhNDYwNTJlIiwibmFtZWlkIjoiZGMwNDIxZDk3NWFiYjQ5YjRmNzEyMTc3NmU3NjJmN2Q1ZGZmOTE0ZSIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUxNjY1OTY5LCJleHAiOjE3NTE3NTIzNjksImlhdCI6MTc1MTY2NTk2OX0._vrsm5Z8HOYpvbct0HCfGzynNqbuKxfEW9jE6IJ_ZzU` // ⬅️ descomenta esta para testar manualmente
+      Authorization: `Bearer ${token}` // ⬅️ comenta essa para usar token fixo
+      //Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJVU0UiLCJkYzA0MjFkOTc1YWJiNDliNGY3MTIxNzc2ZTc2MmY3ZDVkZmY5MTRlIl0sImp0aSI6ImQyZGY1MGI1MjQyZDQ1MmU4YWQ3NjAwMThhNDYwNTJlIiwibmFtZWlkIjoiZGMwNDIxZDk3NWFiYjQ5YjRmNzEyMTc3NmU3NjJmN2Q1ZGZmOTE0ZSIsImVtYWlsIjoiMDYuMDE0LjU3MS8wMDAxLTYxIiwibmJmIjoxNzUxNjY1OTY5LCJleHAiOjE3NTE3NTIzNjksImlhdCI6MTc1MTY2NTk2OX0._vrsm5Z8HOYpvbct0HCfGzynNqbuKxfEW9jE6IJ_ZzU` // ⬅️ descomenta esta para testar manualmente
     }
     });
     
