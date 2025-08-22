@@ -188,7 +188,7 @@ async function buscarParcelas(cpf) {
           <td>${p.atrasada ? `${p.atraso} dia(s)` : "-"}</td>
           <td>
             ${p.valorPagto > 0 ? `R$ ${p.valorPagto.toFixed(2).replace(".", ",")}` : "—"}
-             <button onclick="abrirJanelaProdutoCompleta(${loja}, ${contrato})" class="produto-btn">
+             <button onclick="abrirProdutoModal(${loja}, ${contrato})" class="produto-btn">
               🛍️
             </button>
           </td>
@@ -334,7 +334,7 @@ if (btnVoltar) {
     let mensagemFinal = `Vou Fazer o Pix no valor selecionado de: R$ ${total.toFixed(2).replace(".", ",")}`;
     
     if (listaParcelas.length > 0) {
-      mensagemFinal += `\n\nParcelas selecionadas:\n${listaParcelas.join("\n")}`;
+      mensagemFinal += `\n\nParcela(s) selecionada(s):\n${listaParcelas.join("\n")}`;
     }
 
     // Abre link no WhatsApp
