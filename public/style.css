@@ -161,6 +161,39 @@ tr.vencida {
   cursor: pointer;
   z-index: 2;
 }
+.modal-produto {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.28);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-produto-content {
+  background: #fff;
+  padding: 28px 22px 18px 22px;
+  border-radius: 11px;
+  max-width: 540px;
+  margin: auto;
+  position: relative;
+  box-shadow: 0 8px 32px #1976d244, 0 1.5px 6px #0002;
+  text-align: left;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.fechar-modal-produto {
+  position: absolute;
+  top: 8px; right: 16px;
+  font-size: 2em;
+  color: #1976d2;
+  cursor: pointer;
+  z-index: 2;
+}
 
 /* PIX opções alinhados */
 .pix-opcao {
