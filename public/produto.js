@@ -1,38 +1,16 @@
-function abrirJanelaProdutoCompleta(loja, contrato) {
+function abrirProdutoModal(loja, contrato) {
   const url = `/api/produtoapi?loja=${loja}&codigo=${contrato}`;
-  const largura = Math.min(window.innerWidth, 600);
-  const altura = Math.min(window.innerHeight, 550);
-  const popup = window.open("", "_blank", `width=${largura},height=${altura}`);
-  
+  const modal = document.getElementById("modalProduto");
+  const titulo = document.getElementById("tituloProduto");
+  const conteudo = document.getElementById("conteudoProduto");
 
-  popup.document.write(`
-    <html>
-      <head>
-        <title>Detalhes da Compra</title>
-        <style>
-          body {
-            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-            background: #f8fafc;
-            padding: 20px;
-            color: #333;
-          }
-          h2 { color: #1976d2; margin-bottom: 4px; }
-          p { margin: 8px 0; font-size: 1.05em; }
-          table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 15px; }
-          th, td { padding: 10px 8px; border: 1px solid #e0e0e0; text-align: left; }
-          th { background: #e3edfa; color: #1976d2; font-weight: 700; }
-        </style>
-      </head>
-      <body>
-        <h2>Consultando compra...</h2>
-      </body>
-    </html>
-  `);
+  modal.style.display = "flex";
+  titulo.textContent = "Consultando compra...";
+  conteudo.innerHTML = "<p>Carregando...</p>";
 
   fetch(url)
     .then(res => res.json())
     .then(data => {
-      const cliente = data.cliente;
       const itens = data.itens || [];
       const parcelas = data.parcelas || [];
 
@@ -43,7 +21,6 @@ function abrirJanelaProdutoCompleta(loja, contrato) {
         </tr>
       `).join("");
 
-      // 📌 Adiciona isso logo aqui!
       parcelas.sort((a, b) => new Date(a.vencimento) - new Date(b.vencimento));
 
       const parcelasHTML = parcelas.map(p => `
@@ -55,8 +32,8 @@ function abrirJanelaProdutoCompleta(loja, contrato) {
         </tr>
       `).join("");
 
-      popup.document.body.innerHTML = `
-        <h2>Compra #${data.codigo}</h2>
+      titulo.textContent = `Compra #${data.codigo}`;
+      conteudo.innerHTML = `
         <p><strong>Valor Total:</strong> R$ ${data.valorTotal.toFixed(2).replace(".", ",")}</p>
         <p><strong>Emissão:</strong> ${data.emissao}</p>
 
@@ -74,6 +51,10 @@ function abrirJanelaProdutoCompleta(loja, contrato) {
       `;
     })
     .catch(err => {
-      popup.document.body.innerHTML = `<p style="color:red;">Erro ao buscar os dados da compra: ${err.message}</p>`;
+      conteudo.innerHTML = `<p style="color:red;">Erro ao buscar os dados da compra: ${err.message}</p>`;
     });
 }
+
+document.getElementById("fecharModalProduto").addEventListener("click", () => {
+  document.getElementById("modalProduto").style.display = "none";
+});
