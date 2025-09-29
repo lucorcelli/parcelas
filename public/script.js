@@ -12,7 +12,7 @@ const faixasJuros = [
 function calcularJurosDiario(dias) {
   for (const faixa of faixasJuros) {
     if (dias >= faixa.de && dias <= faixa.ate) {
-      return parseFloat((faixa.taxa / 30 / 100).toFixed(4)); 
+      return parseFloat((faixa.taxa / 30 / 100).toFixed(10)); 
     }
   }
   return 0;
