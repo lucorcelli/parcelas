@@ -67,10 +67,12 @@ function calcularValorCorrigido(valorOriginal, vencimentoStr) {
   if (dias <= 5) return { corrigido: valorOriginal, atraso: dias };
 
   const jurosDia = calcularJurosDiario(dias);
-  const comMulta = valorOriginal * 1.02;
-  const comJuros = comMulta * (1 + jurosDia * dias);
-  return { corrigido: parseFloat(comJuros.toFixed(2)), atraso: dias  }; 
+  const comJuros = valorOriginal * (1 + jurosDia * dias);
+  const comMulta = comJuros * 1.02;
+
+  return { corrigido: parseFloat(comMulta.toFixed(2)), atraso: dias };
 }
+
 
 async function buscarParcelas(cpf) {
   if (!cpf) {
