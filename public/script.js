@@ -242,7 +242,7 @@ function atualizarSelecionado() {
 
 // Modal Pix
 document.getElementById("abrirPix").addEventListener("click", function() {
-  document.getElementById("modalPix").style.display = "none";
+  document.getElementById("modalPix").style.display = "flex";
 });
 document.getElementById("fecharModalPix").addEventListener("click", function() {
   document.getElementById("modalPix").style.display = "none";
